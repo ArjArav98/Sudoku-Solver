@@ -21,7 +21,7 @@ class SudokuFrame{
 		@param none
 		@return none
 	*/
-	SudokuFrame(){
+	public:SudokuFrame(){
 		initFrame();
 		getFrameValues();
 	}
@@ -31,11 +31,10 @@ class SudokuFrame{
 		@param none
 		@return none
 	*/
-	~SudokuFrame(){
+	public:~SudokuFrame(){
 		deleteFrame();
 	}
 	
-
 	/**	initFrame()
 		Initialises the Sudoku-Frame by dynamically allocating 9 columns and 9 rows.
 		@param none
@@ -66,6 +65,24 @@ class SudokuFrame{
 		}
 	}
 	
+	/**	displayFrame()
+		Displays the values stored in the SudokuFrame object.
+		@param none
+		@return none
+	*/
+	public:void displayFrame(){
+		for(i=0; i<9; i++){
+			cout<<"+---+---+---+---+---+---+---+---+---+\n";
+			for(j=0; j<9; j++){
+				cout<<"| ";
+				if(sudokuFrame[i][j]==0) cout<<"  ";
+				else cout<<sudokuFrame[i][j]<<" ";
+			}
+			cout<<"|\n";
+		}
+		cout<<"+---+---+---+---+---+---+---+---+---+\n";
+	}
+	
 	/**	deleteFrame()
 		Deletes the dynamically-allocated values in the frame.
 		@param none
@@ -80,6 +97,8 @@ class SudokuFrame{
 };
 
 int main(){
-	cout<<"Hello World!";
+	SudokuFrame s;	
+	s.displayFrame();
+
 	return 0;
 }
