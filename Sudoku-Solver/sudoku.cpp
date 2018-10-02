@@ -9,6 +9,14 @@
 #include<iostream>
 using namespace std;
 
+#define ROWS 9
+#define COLS 9
+
+#define TRUE 1
+#define FALSE 0
+
+typedef int boolean;
+
 /**	Sudoku-Frame (class)
 	Contains functions and data members necessary fo holding the values in the sudoku-puzzle.
 */
@@ -41,10 +49,10 @@ class SudokuFrame{
 		@return none
 	*/
 	void initFrame(){
-		sudokuFrame=new int*[9];
+		sudokuFrame=new int*[ROWS];
 		
-		for(i=0; i<9; i++){
-			sudokuFrame[i]=new int[9];
+		for(i=0; i<ROWS; i++){
+			sudokuFrame[i]=new int[ROWS];
 		}
 	}
 
@@ -57,21 +65,43 @@ class SudokuFrame{
 		cout<<"Enter the values for the Sudoku puzzle here!\n";
 		cout<<"Enter the particular value when prompted. Enter 0 if cell is empty.\n\n";
 
-		for(i=0; i<9; i++){
-			for(j=0; j<9; j++){
+		for(i=0; i<ROWS; i++){
+			for(j=0; j<COLS; j++){
 				cout<<"Enter value for cell["<<i+1<<"]["<<j+1<<"] --> ";
 				cin>>sudokuFrame[i][j];
 			}
 		}
 	}
 	
+	/**	setCellValue()
+		Takes in the row and col number and then assigns the passed 'num' value
+		to that particular cell.
+		@param row int row of the specified cell
+		@param col int col of the specified cell
+		@return none
+	*/
+	public:void setCellValue(int row, int col, int num){
+		sudokuFrame[row][col]=num;
+	}
+	
+	/**	getCellValue()
+		Returns the value of the cell at the specified row and col.
+		@param row int row of the specified cell
+		@param col int col of the specified cell
+		@return int cellValue value at the specified cell
+	*/
+	public:int getCellValue(int row, int col){
+		int cellValue=sudokuFrame[row][col];
+		return cellValue;
+	}
+
 	/**	displayFrame()
 		Displays the values stored in the SudokuFrame object.
 		@param none
 		@return none
 	*/
 	public:void displayFrame(){
-		for(i=0; i<9; i++){
+		for(i=0; i<ROWS; i++){
 			cout<<"+---+---+---+---+---+---+---+---+---+\n";
 			for(j=0; j<9; j++){
 				cout<<"| ";
@@ -89,16 +119,48 @@ class SudokuFrame{
 		@return none
 	*/
 	void deleteFrame(){
-		for(i=0; i<9; i++){
+		for(i=0; i<ROWS; i++){
 			delete[] sudokuFrame[i];
 		}
 	}
 
 };
 
+
+/**	SudokuSolver (class)
+	Takes in the SudokuFrame object and solves the Sudoku Puzzle.
+*/
+class SudokuSolver{
+	
+	int i, j; //Iterator variables
+	SudokuFrame frame;
+
+	boolean checkCellValidity(int row, int col, int currentValue){
+
+		//Checking if value exists in same column
+		for(i=0; i<ROWS; i++){
+			if(i!=row){
+				int comparingValue=frame.getCellValue(i,col);
+				if(comparingValue==currentValue) return FALSE;
+			}
+		}
+
+		//Checking if value exists in same row
+		for(j=0; j<COLS; j++){
+			if(j!=col){
+				int comparingValue=frame.getCellValue(row,j);
+				if(comparingValue==currentValue) return FALSE;
+			}
+		}
+
+		return TRUE;
+	}
+
+};
+
+
 int main(){
-	SudokuFrame s;	
-	s.displayFrame();
+	SudokuSolver s;	
 
 	return 0;
 }
