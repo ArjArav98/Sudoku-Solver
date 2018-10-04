@@ -22,6 +22,7 @@ typedef int boolean;
 */
 class SudokuFrame{
 	int** sudokuFrame; //This pointer will hold all the values in the matrix.
+	int** editableFrame; //This pointer will tell us all the values which are editable
 	int i, j; //iterator variables
 	
 	/**	Sudoku-Frame() (Constructor)
@@ -50,9 +51,11 @@ class SudokuFrame{
 	*/
 	void initFrame(){
 		sudokuFrame=new int*[ROWS];
+		editableFrame=new int*[ROWS];
 		
 		for(i=0; i<ROWS; i++){
 			sudokuFrame[i]=new int[ROWS];
+			editableFrame[i]=new int[ROWS];
 		}
 	}
 
@@ -69,6 +72,9 @@ class SudokuFrame{
 			for(j=0; j<COLS; j++){
 				cout<<"Enter value for cell["<<i+1<<"]["<<j+1<<"] --> ";
 				cin>>sudokuFrame[i][j];
+
+				if(sudokuFrame[i][j]==0) editableFrame[i][j]=0;
+				else editableFrame[i][j]=1;
 			}
 		}
 	}
@@ -81,7 +87,7 @@ class SudokuFrame{
 		@return none
 	*/
 	public:void setCellValue(int row, int col, int num){
-		sudokuFrame[row][col]=num;
+		if(editableFrame[row][col]==1)	sudokuFrame[row][col]=num;
 	}
 	
 	/**	getCellValue()
@@ -153,7 +159,19 @@ class SudokuSolver{
 			}
 		}
 
+		//Checking if value exists in the same 3x3 square block
+		//Function for checking if the same square has it
+
 		return TRUE;
+	}
+
+	public:void check3x3SquareValidity(int row, int col, int currentValue){
+		int rowStart=(row/3)*3;
+		int rowEnd=(rowStart+2);
+
+		int colStart=(col/3)*3;
+		int colEnd=(colStart+2);
+		
 	}
 
 };
@@ -161,6 +179,8 @@ class SudokuSolver{
 
 int main(){
 	SudokuSolver s;	
+	
+	s.check3x3SquareValidity(4,6,1);
 
 	return 0;
 }
