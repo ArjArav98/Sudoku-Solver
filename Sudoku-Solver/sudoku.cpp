@@ -82,8 +82,8 @@ class SudokuFrame{
 	/**	setCellValue()
 		Takes in the row and col number and then assigns the passed 'num' value
 		to that particular cell.
-		@param row int row of the specified cell
-		@param col int col of the specified cell
+		@param row (int) row of the specified cell
+		@param col (int) col of the specified cell
 		@return none
 	*/
 	public:void setCellValue(int row, int col, int num){
@@ -92,9 +92,9 @@ class SudokuFrame{
 	
 	/**	getCellValue()
 		Returns the value of the cell at the specified row and col.
-		@param row int row of the specified cell
-		@param col int col of the specified cell
-		@return int cellValue value at the specified cell
+		@param row (int) row of the specified cell
+		@param col (int) col of the specified cell
+		@return (int) cellValue value at the specified cell
 	*/
 	public:int getCellValue(int row, int col){
 		int cellValue=sudokuFrame[row][col];
@@ -127,6 +127,7 @@ class SudokuFrame{
 	void deleteFrame(){
 		for(i=0; i<ROWS; i++){
 			delete[] sudokuFrame[i];
+			delete[] editableFrame[i];
 		}
 	}
 
@@ -140,7 +141,14 @@ class SudokuSolver{
 	
 	int i, j; //Iterator variables
 	SudokuFrame frame;
-
+	
+	/**	checkCellValidity
+		Checks if the value is valid or not.
+		@param row (int) row of the required value
+		@param col (int) col of the required value
+		@param currentValue (int) the required value
+		@return (boolean) whether the value is valid or not in the sudoku frame
+	*/
 	boolean checkCellValidity(int row, int col, int currentValue){
 
 		//Checking if value exists in same column
@@ -160,27 +168,52 @@ class SudokuSolver{
 		}
 
 		//Checking if value exists in the same 3x3 square block
-		//Function for checking if the same square has it
+		if(check3x3SquareValidity(row,col,currentValue)==FALSE) return FALSE;
 
 		return TRUE;
 	}
-
-	public:void check3x3SquareValidity(int row, int col, int currentValue){
+	
+	/**	check3x3SquareValidity()
+		Checks if the same value is also present in the same 3x3 grid block.
+		@param row (int) row of the required cell
+		@param col (int) col of the required cell
+		@param currentValue (int) required value
+		@return (boolean) whether the value is present or not
+	*/
+	boolean check3x3SquareValidity(int row, int col, int currentValue){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
 
 		int colStart=(col/3)*3;
 		int colEnd=(colStart+2);
+
+		for(i=rowStart; i<=rowEnd; i++){
+			for(j=colStart; j<=colEnd; j++){
+				if(frame.getCellValue(i,j)==currentValue) return FALSE;
+			}
+		}
+
+		return TRUE;
 		
 	}
-
+	
+	/**	displayFrame()
+		Displays the sudoku frame by calling the displayFrame() func of the
+		SudokuFrame object.
+		@param none
+		@return none
+	*/
+	void displayFrame(){
+		frame.displayFrame();
+	}
+	
 };
 
 
 int main(){
 	SudokuSolver s;	
 	
-	s.check3x3SquareValidity(4,6,1);
+	s.displayFrame();
 
 	return 0;
 }
