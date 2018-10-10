@@ -100,6 +100,16 @@ class SudokuFrame{
 		int cellValue=sudokuFrame[row][col];
 		return cellValue;
 	}
+	
+	/**	isEditable()
+		Returns TRUE/FALSE depending on editableFrame values;
+		@param row (int) row of the required cell
+		@param col (int) col of the required cell
+		@return (boolean) whether cell is editable or not
+	*/
+	public:boolean isEditable(int row, int col){
+		return editableFrame[row][col];
+	}
 
 	/**	displayFrame()
 		Displays the values stored in the SudokuFrame object.
@@ -128,6 +138,68 @@ class SudokuFrame{
 		for(i=0; i<ROWS; i++){
 			delete[] sudokuFrame[i];
 			delete[] editableFrame[i];
+		}
+	}
+
+};
+
+
+class possibilities{
+	
+	struct node{
+		int value;
+		struct node* next;
+	};
+	
+	typedef struct node* Node;
+
+	Node head;
+	Node pos;
+
+	possibilities(){
+		head=new struct node;
+		head->next=NULL;
+	}
+
+	~possibilities(){
+		destroy();
+	}
+
+	public:void push(int number){
+		Node temp=new struct node;
+
+		temp->value=number;
+		temp->next=NULL;
+
+		pos=head;
+		while(pos!=NULL){
+			if(pos->next==NULL){
+				pos->next=temp;
+				break;
+			}
+			pos=pos->next;
+		}
+	}
+
+	public:int operator[](int index){
+		int count=0;
+		pos=head->next;
+		
+		while(pos!=NULL){
+			if(count==index) return pos->value;
+			pos=pos->next;
+		}
+
+		return -1;
+	}
+
+	void destroy(){
+		Node temp;
+		pos=head;
+		while(pos!=NULL){
+			temp=pos;
+			pos=pos->next;
+			delete temp;
 		}
 	}
 
@@ -196,6 +268,14 @@ class SudokuSolver{
 		return TRUE;
 		
 	}
+
+	/*possibilities getCellPossibilities(int row, int column){
+		int i=0;
+
+		for(i=0; i<9; i++){
+			
+		}
+	}*/
 	
 	/**	displayFrame()
 		Displays the sudoku frame by calling the displayFrame() func of the
@@ -203,7 +283,7 @@ class SudokuSolver{
 		@param none
 		@return none
 	*/
-	void displayFrame(){
+	public:void displayFrame(){
 		frame.displayFrame();
 	}
 	
