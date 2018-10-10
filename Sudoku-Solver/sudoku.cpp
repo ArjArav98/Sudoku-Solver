@@ -317,13 +317,13 @@ class SudokuSolver{
 		return TRUE;	
 	}
 
-	public:Possibilities getCellPossibilities(int row, int column){
+	public:Possibilities getCellPossibilities(int row, int col){
 		int i=0;
 
 		Possibilities possibilities;
 
 		for(i=1; i<=9; i++){
-			if(cellValueValid(row,column,i))
+			if(cellValueValid(row,col,i))
 				possibilities.push(i);
 		}
 
@@ -331,28 +331,64 @@ class SudokuSolver{
 	}
 
 	int singleCellSolve(int row, int col){
+
+		cout<<"We are now at "<<row<<","<<col<<endl;
 		
 		if(frame.isEditable(row,col)){
-			
+
 			Possibilities possibilities;
 			possibilities.copy(getCellPossibilities(row,col));
 			
+			int x=0;
 			int posLength=possibilities.length();
-
-			for(i=0; i<posLength; i++){
+			
+			for(x=0; x<posLength; x++){
+				int possibility=possibilities[x];
 				
-				if(cellValueValid(row,col,possibilities[i])){
+				if(cellValueValid(row,col,possibility)){
+
+					cout<<"the current poss is "<<possibility<<endl;
+					frame.setCellValue(row,col,possibility);
+					int newRow=0, newCol=0;					
+
+					if(col<8) newCol=col+1;
+					else if(col==8){
+						if(row==8) return 1;
+						newRow=row+1;
+						newCol=0;
+					}
+
+					cout<<"The next cell is "<<newRow<<","<<newCol<<endl;
 					
+					if(singleCellSolve(newRow,newCol)==0)
+						frame.clearFrameFrom(newRow,newCol);
+					else return 1;
+
 				}
 	
 			}
 
 		}
+		else{
+			int newRow=0, newCol=0;
+			if(col<8) newCol=col+1;
+			else if(col==8){
+				if(row==8) return 1;
+				newRow=row+1;
+				newCol=0;
+			}
+			
+			return singleCellSolve(newRow,newCol);
+		}
 
+		return 0;
 	}
 
 	public:void solve(){
 		int success=singleCellSolve(0,0);
+		
+		if(success==0) cout<<"This didnt work!\n";
+		else cout<<"This worked!\n";
 	}
 	
 	/**	displayFrame()
@@ -370,6 +406,7 @@ class SudokuSolver{
 
 int main(){
 	SudokuSolver s;
+	s.solve();	
 	
 	return 0;
 }
