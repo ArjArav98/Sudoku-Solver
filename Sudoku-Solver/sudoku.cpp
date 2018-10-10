@@ -111,6 +111,14 @@ class SudokuFrame{
 		return editableFrame[row][col];
 	}
 
+	public:void clearFrameFrom(int row, int col){
+		for(i=row; i<9; i++){
+			for(j=col; j<9; j++){
+				setCellValue(i,j,0);
+			}
+		}
+	}
+
 	/**	displayFrame()
 		Displays the values stored in the SudokuFrame object.
 		@param none
@@ -139,12 +147,14 @@ class SudokuFrame{
 			delete[] sudokuFrame[i];
 			delete[] editableFrame[i];
 		}
+		delete sudokuFrame;
+		delete editableFrame;
 	}
 
 };
 
 
-class possibilities{
+class Possibilities{
 	
 	struct node{
 		int value;
@@ -156,12 +166,12 @@ class possibilities{
 	Node head;
 	Node pos;
 
-	possibilities(){
+	public:Possibilities(){
 		head=new struct node;
 		head->next=NULL;
 	}
 
-	~possibilities(){
+	public:~Possibilities(){
 		destroy();
 	}
 
@@ -186,11 +196,50 @@ class possibilities{
 		pos=head->next;
 		
 		while(pos!=NULL){
-			if(count==index) return pos->value;
+			if(count==index)
+				return pos->value;
 			pos=pos->next;
+			count++;
 		}
 
 		return -1;
+	}
+
+	public:void print(){
+		pos=head->next;
+		while(pos!=NULL){
+			cout<<pos->value<<",";
+			pos=pos->next;
+		}
+		cout<<"\b";
+	}
+
+	int length(){
+		pos=head->next;
+		int count=0;
+
+		while(pos!=NULL){
+			count++;
+			pos=pos->next;
+		}
+		
+		return count;
+	}
+
+	void copy(Possibilities possibilities){ //Need to make this clear the old list if exists
+		int oldLength=possibilities.length();
+		int i=0;
+		
+		pos=head;
+		for(i=0; i<oldLength; i++){
+			Node temp=new struct node;
+
+			temp->next=NULL;
+			temp->value=possibilities[i];
+
+			pos->next=temp;
+			pos=pos->next;
+		}
 	}
 
 	void destroy(){
@@ -214,14 +263,14 @@ class SudokuSolver{
 	int i, j; //Iterator variables
 	SudokuFrame frame;
 	
-	/**	checkCellValidity
+	/**	cellValueValid()
 		Checks if the value is valid or not.
 		@param row (int) row of the required value
 		@param col (int) col of the required value
 		@param currentValue (int) the required value
 		@return (boolean) whether the value is valid or not in the sudoku frame
 	*/
-	boolean checkCellValidity(int row, int col, int currentValue){
+	public:boolean cellValueValid(int row, int col, int currentValue){
 
 		//Checking if value exists in same column
 		for(i=0; i<ROWS; i++){
@@ -240,19 +289,19 @@ class SudokuSolver{
 		}
 
 		//Checking if value exists in the same 3x3 square block
-		if(check3x3SquareValidity(row,col,currentValue)==FALSE) return FALSE;
+		if(ThreeByThreeGridValid(row,col,currentValue)==FALSE) return FALSE;
 
 		return TRUE;
 	}
 	
-	/**	check3x3SquareValidity()
+	/**	ThreeByThreeGridValid()
 		Checks if the same value is also present in the same 3x3 grid block.
 		@param row (int) row of the required cell
 		@param col (int) col of the required cell
 		@param currentValue (int) required value
 		@return (boolean) whether the value is present or not
 	*/
-	boolean check3x3SquareValidity(int row, int col, int currentValue){
+	boolean ThreeByThreeGridValid(int row, int col, int currentValue){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
 
@@ -265,17 +314,46 @@ class SudokuSolver{
 			}
 		}
 
-		return TRUE;
-		
+		return TRUE;	
 	}
 
-	/*possibilities getCellPossibilities(int row, int column){
+	public:Possibilities getCellPossibilities(int row, int column){
 		int i=0;
 
-		for(i=0; i<9; i++){
-			
+		Possibilities possibilities;
+
+		for(i=1; i<=9; i++){
+			if(cellValueValid(row,column,i))
+				possibilities.push(i);
 		}
-	}*/
+
+		return possibilities;
+	}
+
+	int singleCellSolve(int row, int col){
+		
+		if(frame.isEditable(row,col)){
+			
+			Possibilities possibilities;
+			possibilities.copy(getCellPossibilities(row,col));
+			
+			int posLength=possibilities.length();
+
+			for(i=0; i<posLength; i++){
+				
+				if(cellValueValid(row,col,possibilities[i])){
+					
+				}
+	
+			}
+
+		}
+
+	}
+
+	public:void solve(){
+		int success=singleCellSolve(0,0);
+	}
 	
 	/**	displayFrame()
 		Displays the sudoku frame by calling the displayFrame() func of the
@@ -291,9 +369,7 @@ class SudokuSolver{
 
 
 int main(){
-	SudokuSolver s;	
+	SudokuSolver s;
 	
-	s.displayFrame();
-
 	return 0;
 }
