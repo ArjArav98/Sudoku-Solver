@@ -1,2 +1,2 @@
 # Sudoku-Solver
-An application which solves Sudoku puzzles. This application is written wholly in C++.
+An application which solves Sudoku puzzles. This application is written in C++.
