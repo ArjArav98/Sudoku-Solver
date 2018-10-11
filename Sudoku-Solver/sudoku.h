@@ -76,6 +76,7 @@ class SudokuFrame{
 				if(sudokuFrame[i][j]==0) editableFrame[i][j]=0;
 				else editableFrame[i][j]=1;
 			}
+			cout<<"-------\n";
 		}
 	}
 	
@@ -271,7 +272,12 @@ class Possibilities{
 class SudokuSolver{
 	
 	int i, j; //Iterator variables
+	int recursiveCount; //Stats variable
 	SudokuFrame frame;
+
+	public:SudokuSolver(){
+		recursiveCount=0;
+	}
 	
 	/**	cellValueValid()
 		Checks if the value is valid or not.
@@ -341,7 +347,9 @@ class SudokuSolver{
 	}
 
 	int singleCellSolve(int row, int col){
-			
+		
+		statsIncrement();
+
 		if(frame.isEditable(row,col)){
 
 			Possibilities possibilities;
@@ -394,7 +402,7 @@ class SudokuSolver{
 
 	public:void solve(){
 		int success=singleCellSolve(0,0);
-		if(success==1) cout<<"Solved! QED.\n";
+		if(success==1) cout<<"\nYour Sudoku puzzle has been solved! QED.\n";
 		else cout<<"This didn't work!\n";
 	}
 	
@@ -407,15 +415,13 @@ class SudokuSolver{
 	public:void displayFrame(){
 		frame.displayFrame();
 	}
+
+	void statsIncrement(){
+		recursiveCount++;
+	}
+
+	public:void statsPrint(){
+		cout<<"\nThe singleCellSolve() function was recursively called "<<recursiveCount<<" times.\n";
+	}
 	
 };
-
-
-int main(){
-	SudokuSolver s;
-	s.displayFrame();
-	s.solve();
-	s.displayFrame();
-	
-	return 0;
-}
