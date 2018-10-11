@@ -87,7 +87,7 @@ class SudokuFrame{
 		@return none
 	*/
 	public:void setCellValue(int row, int col, int num){
-		if(editableFrame[row][col]==1)	sudokuFrame[row][col]=num;
+		if(editableFrame[row][col]==0)	sudokuFrame[row][col]=num;
 	}
 	
 	/**	getCellValue()
@@ -108,7 +108,7 @@ class SudokuFrame{
 		@return (boolean) whether cell is editable or not
 	*/
 	public:boolean isEditable(int row, int col){
-		return editableFrame[row][col];
+		return (editableFrame[row][col]-1)*(-1);
 	}
 
 	public:void clearFrameFrom(int row, int col){
@@ -125,6 +125,7 @@ class SudokuFrame{
 		@return none
 	*/
 	public:void displayFrame(){
+		cout<<"\n";
 		for(i=0; i<ROWS; i++){
 			cout<<"+---+---+---+---+---+---+---+---+---+\n";
 			for(j=0; j<9; j++){
@@ -331,64 +332,62 @@ class SudokuSolver{
 	}
 
 	int singleCellSolve(int row, int col){
-
-		cout<<"We are now at "<<row<<","<<col<<endl;
 		
 		if(frame.isEditable(row,col)){
-
+		
 			Possibilities possibilities;
 			possibilities.copy(getCellPossibilities(row,col));
-			
-			int x=0;
+
 			int posLength=possibilities.length();
-			
+			int x=0, newRow=row, newCol=col;
+
 			for(x=0; x<posLength; x++){
 				int possibility=possibilities[x];
-				
-				if(cellValueValid(row,col,possibility)){
+				frame.setCellValue(row,col,possibility);
 
-					cout<<"the current poss is "<<possibility<<endl;
-					frame.setCellValue(row,col,possibility);
-					int newRow=0, newCol=0;					
-
-					if(col<8) newCol=col+1;
-					else if(col==8){
-						if(row==8) return 1;
-						newRow=row+1;
-						newCol=0;
-					}
-
-					cout<<"The next cell is "<<newRow<<","<<newCol<<endl;
-					
-					if(singleCellSolve(newRow,newCol)==0)
-						frame.clearFrameFrom(newRow,newCol);
-					else return 1;
-
+				if(col<8) newCol=col+1;
+				else if(col==8){
+					if(row==8) return 1;
+					newRow=row+1;
+					newCol=0;
 				}
-	
-			}
 
-		}
+				{
+
+					cout<<"This is here at "<<newRow<<","<<newCol<<endl;
+
+					if(singleCellSolve(newRow,newCol)==0){
+						frame.clearFrameFrom(newRow,newCol);
+						continue;
+					}
+					else return 1;
+				} //Recursion block ends here
+
+			} //Loop ends here
+
+			return 0;
+			
+		} //The isEditable() if block ends here.
 		else{
-			int newRow=0, newCol=0;
+			
+			int newRow=row, newCol=col;
+
 			if(col<8) newCol=col+1;
 			else if(col==8){
 				if(row==8) return 1;
 				newRow=row+1;
 				newCol=0;
 			}
-			
-			return singleCellSolve(newRow,newCol);
-		}
 
-		return 0;
+			return singleCellSolve(newRow,newCol);
+
+		} //The else block ends here
+
 	}
 
 	public:void solve(){
 		int success=singleCellSolve(0,0);
-		
-		if(success==0) cout<<"This didnt work!\n";
-		else cout<<"This worked!\n";
+		if(success==1) cout<<"Solved! QED.\n";
 	}
 	
 	/**	displayFrame()
@@ -406,7 +405,8 @@ class SudokuSolver{
 
 int main(){
 	SudokuSolver s;
-	s.solve();	
+	s.solve();
+	s.displayFrame();
 	
 	return 0;
 }
