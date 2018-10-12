@@ -9,9 +9,6 @@
 #include<iostream>
 using namespace std;
 
-#define ROWS 9
-#define COLS 9
-
 #define TRUE 1
 #define FALSE 0
 
@@ -21,9 +18,9 @@ typedef int boolean;
 	Contains functions and data members necessary fo holding the values in the sudoku-puzzle.
 */
 class SudokuFrame{
-	int** sudokuFrame; //This pointer will hold all the values in the matrix.
-	int** editableFrame; //This pointer will tell us all the values which are editable
-	int i, j; //iterator variables
+	int sudokuFrame[9][9]; //This pointer will hold all the values in the matrix.
+	int editableFrame[9][9]; //This pointer will tell us all the values which are editable
+	int rowIter, colIter; //iterator variables
 	
 	/**	Sudoku-Frame() (Constructor)
 		This constructor calls the initFrame() and getFrameValues() functions.
@@ -31,34 +28,9 @@ class SudokuFrame{
 		@return none
 	*/
 	public:SudokuFrame(){
-		initFrame();
 		getFrameValues();
 	}
 	
-	/**	Sudoku-Frame (destructor)
-		Calls the deleteFrame() function.
-		@param none
-		@return none
-	*/
-	public:~SudokuFrame(){
-		deleteFrame();
-	}
-	
-	/**	initFrame()
-		Initialises the Sudoku-Frame by dynamically allocating 9 columns and 9 rows.
-		@param none
-		@return none
-	*/
-	void initFrame(){
-		sudokuFrame=new int*[ROWS];
-		editableFrame=new int*[ROWS];
-		
-		for(i=0; i<ROWS; i++){
-			sudokuFrame[i]=new int[ROWS];
-			editableFrame[i]=new int[ROWS];
-		}
-	}
-
 	/**	getFrameValues()
 		Gets the values to be inputted into the Sudoku-Frame.
 		@param none
@@ -68,13 +40,13 @@ class SudokuFrame{
 		cout<<"Enter the values for the Sudoku puzzle here!\n";
 		cout<<"Enter the particular value when prompted. Enter 0 if cell is empty.\n\n";
 
-		for(i=0; i<ROWS; i++){
-			for(j=0; j<COLS; j++){
-				cout<<"Enter value for cell["<<i+1<<"]["<<j+1<<"] --> ";
-				cin>>sudokuFrame[i][j];
+		for(rowIter=0; rowIter<9; rowIter++){
+			for(colIter=0; colIter<9; colIter++){
+				cout<<"Enter value for cell["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
+				cin>>sudokuFrame[rowIter][colIter];
 
-				if(sudokuFrame[i][j]==0) editableFrame[i][j]=0;
-				else editableFrame[i][j]=1;
+				if(sudokuFrame[rowIter][colIter]==0) editableFrame[rowIter][colIter]=0;
+				else editableFrame[rowIter][colIter]=1;
 			}
 			cout<<"-------\n";
 		}
@@ -115,13 +87,13 @@ class SudokuFrame{
 	public:void clearFrameFrom(int row, int col){
 		int jcount=0;
 
-		for(i=row; i<9; i++){
+		for(rowIter=row; rowIter<9; rowIter++){
 			
-			if(jcount==0) j=col;
-			else j=0;
+			if(jcount==0) colIter=col;
+			else colIter=0;
 
-			for(; j<9; j++){
-				if(editableFrame[i][j]==0) sudokuFrame[i][j]=0;
+			for(; colIter<9; colIter++){
+				if(editableFrame[rowIter][colIter]==0) sudokuFrame[rowIter][colIter]=0;
 			}
 
 			jcount++;
@@ -136,32 +108,18 @@ class SudokuFrame{
 	*/
 	public:void displayFrame(){
 		cout<<"\n";
-		for(i=0; i<ROWS; i++){
+		for(rowIter=0; rowIter<9; rowIter++){
 			cout<<"+---+---+---+---+---+---+---+---+---+\n";
-			for(j=0; j<9; j++){
+			for(colIter=0; colIter<9; colIter++){
 				cout<<"| ";
-				if(sudokuFrame[i][j]==0) cout<<"  ";
-				else cout<<sudokuFrame[i][j]<<" ";
+				if(sudokuFrame[rowIter][colIter]==0) cout<<"  ";
+				else cout<<sudokuFrame[rowIter][colIter]<<" ";
 			}
 			cout<<"|\n";
 		}
 		cout<<"+---+---+---+---+---+---+---+---+---+\n";
 	}
 	
-	/**	deleteFrame()
-		Deletes the dynamically-allocated values in the frame.
-		@param none
-		@return none
-	*/
-	void deleteFrame(){
-		for(i=0; i<ROWS; i++){
-			delete[] sudokuFrame[i];
-			delete[] editableFrame[i];
-		}
-		delete sudokuFrame;
-		delete editableFrame;
-	}
-
 };
 
 
@@ -239,14 +197,14 @@ class Possibilities{
 
 	void copy(Possibilities possibilities){ //Need to make this clear the old list if exists
 		int oldLength=possibilities.length();
-		int i=0;
+		int iter=0;
 		
 		pos=head;
-		for(i=0; i<oldLength; i++){
+		for(iter=0; iter<oldLength; iter++){
 			Node temp=new struct node;
 
 			temp->next=NULL;
-			temp->value=possibilities[i];
+			temp->value=possibilities[iter];
 
 			pos->next=temp;
 			pos=pos->next;
@@ -271,7 +229,7 @@ class Possibilities{
 */
 class SudokuSolver{
 	
-	int i, j; //Iterator variables
+	int rowIter, colIter; //Iter variables
 	int recursiveCount; //Stats variable
 	SudokuFrame frame;
 
@@ -289,17 +247,17 @@ class SudokuSolver{
 	public:boolean cellValueValid(int row, int col, int currentValue){
 
 		//Checking if value exists in same column
-		for(i=0; i<ROWS; i++){
-			if(i!=row){
-				int comparingValue=frame.getCellValue(i,col);
+		for(rowIter=0; rowIter<9; rowIter++){
+			if(rowIter!=row){
+				int comparingValue=frame.getCellValue(rowIter,col);
 				if(comparingValue==currentValue) return FALSE;
 			}
 		}
 
 		//Checking if value exists in same row
-		for(j=0; j<COLS; j++){
-			if(j!=col){
-				int comparingValue=frame.getCellValue(row,j);
+		for(colIter=0; colIter<9; colIter++){
+			if(colIter!=col){
+				int comparingValue=frame.getCellValue(row,colIter);
 				if(comparingValue==currentValue) return FALSE;
 			}
 		}
@@ -324,9 +282,9 @@ class SudokuSolver{
 		int colStart=(col/3)*3;
 		int colEnd=(colStart+2);
 
-		for(i=rowStart; i<=rowEnd; i++){
-			for(j=colStart; j<=colEnd; j++){
-				if(frame.getCellValue(i,j)==currentValue) return FALSE;
+		for(rowIter=rowStart; rowIter<=rowEnd; rowIter++){
+			for(colIter=colStart; colIter<=colEnd; colIter++){
+				if(frame.getCellValue(rowIter,colIter)==currentValue) return FALSE;
 			}
 		}
 
@@ -334,13 +292,13 @@ class SudokuSolver{
 	}
 
 	public:Possibilities getCellPossibilities(int row, int col){
-		int i=0;
+		int iter=0;
 
 		Possibilities possibilities;
 
-		for(i=1; i<=9; i++){
-			if(cellValueValid(row,col,i))
-				possibilities.push(i);
+		for(iter=1; iter<=9; iter++){
+			if(cellValueValid(row,col,iter))
+				possibilities.push(iter);
 		}
 
 		return possibilities;
@@ -356,10 +314,10 @@ class SudokuSolver{
 			possibilities.copy(getCellPossibilities(row,col));
 
 			int posLength=possibilities.length();
-			int x=0, newRow=row, newCol=col;
+			int posIter=0, newRow=row, newCol=col;
 
-			for(x=0; x<posLength; x++){
-				int possibility=possibilities[x];
+			for(posIter=0; posIter<posLength; posIter++){
+				int possibility=possibilities[posIter];
 				frame.setCellValue(row,col,possibility);
 
 				if(col<8) newCol=col+1;
