@@ -15,15 +15,20 @@ using namespace std;
 typedef int boolean;
 
 /**	Sudoku-Frame (class)
-	Contains functions and data members necessary fo holding the values in the sudoku-puzzle.
+
+	This class provides a data structure which can hold and manipulate the values in a sudoku puzzle.
+	In this file, we shall call this data structure the 'Sudoku Frame'.
 */
 class SudokuFrame{
+	
 	int sudokuFrame[9][9]; //This pointer will hold all the values in the matrix.
-	int editableFrame[9][9]; //This pointer will tell us all the values which are editable
+	int editableFrame[9][9]; //This pointer will tell us all the values which are editable.
 	int rowIter, colIter; //iterator variables
 	
+
 	/**	Sudoku-Frame() (Constructor)
-		This constructor calls the initFrame() and getFrameValues() functions.
+	
+		@desc This constructor calls functions which get the values for the Sudoku Frame.
 		@param none
 		@return none
 	*/
@@ -31,8 +36,9 @@ class SudokuFrame{
 		getFrameValues();
 	}
 	
-	/**	getFrameValues()
-		Gets the values to be inputted into the Sudoku-Frame.
+	/**	getFrameValues() (Function)
+
+		@desc Reads the values for the Sudoku Frame cell-by-cell.
 		@param none
 		@return none
 	*/
@@ -53,8 +59,8 @@ class SudokuFrame{
 	}
 	
 	/**	setCellValue()
-		Takes in the row and col number and then assigns the passed 'num' value
-		to that particular cell.
+
+		@desc Assigns the passed-in number to the specified row and col.
 		@param row (int) row of the specified cell
 		@param col (int) col of the specified cell
 		@return none
@@ -64,7 +70,8 @@ class SudokuFrame{
 	}
 	
 	/**	getCellValue()
-		Returns the value of the cell at the specified row and col.
+
+		@desc Returns the value of the cell at the specified row and col.
 		@param row (int) row of the specified cell
 		@param col (int) col of the specified cell
 		@return (int) cellValue value at the specified cell
@@ -75,15 +82,23 @@ class SudokuFrame{
 	}
 	
 	/**	isEditable()
-		Returns TRUE/FALSE depending on editableFrame values;
+
+		@desc Returns TRUE/FALSE depending on editableFrame values.
 		@param row (int) row of the required cell
 		@param col (int) col of the required cell
-		@return (boolean) whether cell is editable or not
+		@return (int) 1 if editable; 0 if not
 	*/
-	public:boolean isEditable(int row, int col){
+	public:int isEditable(int row, int col){
 		return (editableFrame[row][col]-1)*(-1);
 	}
 
+	/**	clearFrameFrom()
+
+		@desc clears frame of all values, other than the question values, from
+		the specified cell to the last cell.
+		@param row (int) row of the specified cell
+		@param col (int) col of the specified cell
+	*/
 	public:void clearFrameFrom(int row, int col){
 		int jcount=0;
 
@@ -102,7 +117,8 @@ class SudokuFrame{
 	}
 
 	/**	displayFrame()
-		Displays the values stored in the SudokuFrame object.
+
+		@desc Displays the values stored in the frame with designs.
 		@param none
 		@return none
 	*/
@@ -123,28 +139,50 @@ class SudokuFrame{
 };
 
 
+/**	Possibilities (class)
+
+	This class provides the programmer a very simple way to iterate through
+	the possibilities of a specified cell. This object utilises linked lists.
+*/
 class Possibilities{
 	
 	struct node{
 		int value;
 		struct node* next;
-	};
+	}; //The struct for the node
 	
 	typedef struct node* Node;
 
-	Node head;
-	Node pos;
+	Node head; //The head node
+	Node pos; //A node iterator variable
+	
 
+	/**	Possibilities (constructor)
+		
+		@desc this constructor initialises the head (or sentinel) node
+	*/
 	public:Possibilities(){
 		head=new struct node;
 		head->next=NULL;
 	}
+	
+	/**	Possibilities (destructor)
 
+		@desc this destructor destroys the linked list once the object
+		has finished its lifespan. Calls the destroy() function.
+	*/
 	public:~Possibilities(){
 		destroy();
 	}
-
-	public:void push(int number){
+	
+	/**	append()
+		
+		@desc this functions takes in a number and adds it as a node in
+		the linked list.
+		@param number (int) the number which we want to append
+		@return none
+	*/
+	public:void append(int number){
 		Node temp=new struct node;
 
 		temp->value=number;
@@ -159,7 +197,13 @@ class Possibilities{
 			pos=pos->next;
 		}
 	}
+	
+	/**	operator[]
 
+		@desc an operator overload function which overloads the [] operator.
+		@param index (int) the index of the required node in the linked list.
+		@return (int) the value contained in the specified node.
+	*/
 	public:int operator[](int index){
 		int count=0;
 		pos=head->next;
@@ -174,6 +218,12 @@ class Possibilities{
 		return -1;
 	}
 
+	/**	print()
+
+		@desc prints the values inside all the nodes of the linked list.
+		@param none
+		@return none
+	*/
 	public:void print(){
 		pos=head->next;
 		while(pos!=NULL){
@@ -183,6 +233,12 @@ class Possibilities{
 		cout<<"\b";
 	}
 
+	/**	length()
+		
+		@desc returns the length of the linked list.
+		@param none
+		@return (int) the length of the linked list.
+	*/
 	int length(){
 		pos=head->next;
 		int count=0;
@@ -194,7 +250,14 @@ class Possibilities{
 		
 		return count;
 	}
+	
+	/**	copy()
 
+		@desc this function takes in a possibilities object and copies
+		the contents into THIS object.
+		@param possibilities (Possibilities) the object which is to be copied
+		@return none
+	*/
 	void copy(Possibilities possibilities){ //Need to make this clear the old list if exists
 		int oldLength=possibilities.length();
 		int iter=0;
@@ -210,7 +273,13 @@ class Possibilities{
 			pos=pos->next;
 		}
 	}
-
+	
+	/**	destroy()
+		
+		@desc frees all the nodes in the linked list
+		@param none
+		@return none
+	*/
 	void destroy(){
 		Node temp;
 		pos=head;
@@ -225,20 +294,27 @@ class Possibilities{
 
 
 /**	SudokuSolver (class)
+
 	Takes in the SudokuFrame object and solves the Sudoku Puzzle.
 */
 class SudokuSolver{
 	
 	int rowIter, colIter; //Iter variables
 	int recursiveCount; //Stats variable
-	SudokuFrame frame;
-
+	SudokuFrame frame; //The frame object
+	
+	/**	SudokuSolver (constructor)
+	
+		@desc The constructor initialises the recursiveCount variable.
+		@param none
+	*/
 	public:SudokuSolver(){
 		recursiveCount=0;
 	}
 	
 	/**	cellValueValid()
-		Checks if the value is valid or not.
+
+		@desc Checks if the value in the specified cell is valid or not.
 		@param row (int) row of the required value
 		@param col (int) col of the required value
 		@param currentValue (int) the required value
@@ -269,7 +345,8 @@ class SudokuSolver{
 	}
 	
 	/**	ThreeByThreeGridValid()
-		Checks if the same value is also present in the same 3x3 grid block.
+
+		@desc Checks if the same value is also present in the same 3x3 grid block.
 		@param row (int) row of the required cell
 		@param col (int) col of the required cell
 		@param currentValue (int) required value
@@ -290,7 +367,14 @@ class SudokuSolver{
 
 		return TRUE;	
 	}
+	
+	/**	getPossibilities()
 
+		@desc gets the possible values and assigns them to the possibilities list.
+		@param row (int) row of the specified cell
+		@param col (int) col of the specified cell
+		@return (Possibilities) Possibilities object containing all the possible values.
+	*/
 	public:Possibilities getCellPossibilities(int row, int col){
 		int iter=0;
 
@@ -303,10 +387,21 @@ class SudokuSolver{
 
 		return possibilities;
 	}
+	
+	/**	singleCellSolve()
+		
+		@desc the recursive function which does all the work, this iterates over the
+		possible values for the specified cell one-by-one. Once a value has been filled, it
+		goes to the next cell. Here, the same thing happens. If none of the possible values
+		work out, then the function backtracks to the previous cell.
 
+		@param row (int) row of the specified cell
+		@param col (int) col of the specified cell
+		@return (int) whether the value put in the cell made it a SUCCESS or NOT
+	*/
 	int singleCellSolve(int row, int col){
 		
-		statsIncrement();
+		statsIncrement(); //This is used to see how many times the func is called.
 
 		if(frame.isEditable(row,col)){
 
@@ -316,20 +411,21 @@ class SudokuSolver{
 			int posLength=possibilities.length();
 			int posIter=0, newRow=row, newCol=col;
 
-			for(posIter=0; posIter<posLength; posIter++){
+			for(posIter=0; posIter<posLength; posIter++){ //We iter over the possible values
 				int possibility=possibilities[posIter];
 				frame.setCellValue(row,col,possibility);
-
-				if(col<8) newCol=col+1;
+				
+				//We now increment the col/row values for the next recursion
+				if(col<8) newCol=col+1; 
 				else if(col==8){
-					if(row==8) return 1;
+					if(row==8) return 1; //this means success
 					newRow=row+1;
 					newCol=0;
 				}
 
 				{
 
-					if(singleCellSolve(newRow,newCol)==0){
+					if(singleCellSolve(newRow,newCol)==0){ //If wrong, clear frame and start over
 						frame.clearFrameFrom(newRow,newCol);
 					}
 					else return 1;
@@ -344,7 +440,8 @@ class SudokuSolver{
 		else{
 
 			int newRow=row, newCol=col;
-
+			
+			//Same incrementing of the col/row values
 			if(col<8) newCol=col+1;
 			else if(col==8){
 				if(row==8) return 1;
@@ -358,14 +455,22 @@ class SudokuSolver{
 
 	}
 
+	/**	solve()
+
+		@desc calls the singleCellSolve() func and prints a success/fail mesg.
+		@param none
+		@return none
+	*/
 	public:void solve(){
 		int success=singleCellSolve(0,0);
+		
 		if(success==1) cout<<"\nYour Sudoku puzzle has been solved! QED.\n";
 		else cout<<"This didn't work!\n";
 	}
 	
 	/**	displayFrame()
-		Displays the sudoku frame by calling the displayFrame() func of the
+
+		@desc displays the sudoku frame by calling the displayFrame() func of the
 		SudokuFrame object.
 		@param none
 		@return none
@@ -373,11 +478,23 @@ class SudokuSolver{
 	public:void displayFrame(){
 		frame.displayFrame();
 	}
+	
+	/**	statsIncrement()
 
+		@desc this increments the count variable to keep track of the recursions done.
+		@param none
+		@return none
+	*/
 	void statsIncrement(){
 		recursiveCount++;
 	}
 
+	/**	statsPrint()
+
+		@desc this displays the number of times recursion has happened.
+		@param none
+		@return none
+	*/
 	public:void statsPrint(){
 		cout<<"\nThe singleCellSolve() function was recursively called "<<recursiveCount<<" times.\n";
 	}
