@@ -382,7 +382,7 @@ class SudokuSolver{
 
 		for(iter=1; iter<=9; iter++){
 			if(cellValueValid(row,col,iter))
-				possibilities.push(iter);
+				possibilities.append(iter);
 		}
 
 		return possibilities;
