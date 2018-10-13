@@ -7,6 +7,7 @@
 //Objective - This is an application written in C++ which takes in Sudoku puzzles and outputs the solution.
 
 #include<iostream>
+#include<fstream>
 using namespace std;
 
 #define TRUE 1
@@ -31,15 +32,53 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	public:SudokuFrame(){
-		getFrameValues();
+		menu();
 	}
 	
+	void menu(){
+		
+		cout<<"\n======================\n";
+		cout<<"    Sudoku Solver\n";
+		cout<<"======================\n\n";
+
+		cout<<"Welcome to Sudoku Solver!\n";
+		cout<<"Before we start, you will have to input the puzzle into this program.\n\n";
+		cout<<"You can either:-\n";
+		cout<<"\t1. Input the puzzle by entering the values manually. (Enter 1)\n";
+		cout<<"\t2. Input the puzzle by reading a file with values in it. (Enter 2)\n";
+		cout<<"\t   The file must not have a name > 20 characters.\n";
+		cout<<"\t   The file must be in the same directory as this C++ file.\n";
+		cout<<"\t   The file must have all 81 values seperated with spaces.\n";
+		cout<<"\t   Blank cells must be filled in as 0 (eg; 1 0 0 2 0 0 ...).\n\n";
+		cout<<"\t   --> ";
+
+		int option;
+		cin>>option;
+
+		if(option==1) readFrameValues();
+		else if(option==2) readFrameValuesFile();
+		else{
+			while(true){
+				cout<<"\nYou seem to have entered an invalid option. Try again.\n";
+				cout<<"\t  --> ";
+				cin>>option;
+
+				if(option==1) readFrameValues();
+				else if(option==2) readFrameValuesFile();
+				else continue;
+
+				break;
+			}
+		}
+
+	}
+
 	/**
 	  *	@desc Reads the values for the Sudoku Frame cell-by-cell.
 	  *	@param none
 	  *	@return none
 	*/
-	void getFrameValues(){
+	void readFrameValues(){
 		cout<<"Enter the values for the Sudoku puzzle here!\n";
 		cout<<"Enter the particular value when prompted. Enter 0 if cell is empty.\n\n";
 
@@ -53,6 +92,36 @@ class SudokuFrame{
 			}
 			cout<<"-------\n";
 		}
+	}
+
+	void readFrameValuesFile(){
+
+		char filename[20];
+
+		cout<<"\nEnter the name of the file that contains the Sudoku Puzzle.\n";
+		cout<<"\t  --> ";
+		cin>>filename;
+
+		ifstream sudokuFile;
+		sudokuFile.open(filename,ios::in);
+
+		for(rowIter=0; rowIter<9; rowIter++){
+			for(colIter=0; colIter<9; colIter++){
+				int readValue;
+		
+				sudokuFile>>readValue;
+				sudokuFrame[rowIter][colIter]=readValue;
+
+				if(sudokuFrame[rowIter][colIter]==0) editableFrame[rowIter][colIter]=0;
+				else editableFrame[rowIter][colIter]=1;
+
+				if(sudokuFile.eof()) break;
+			}
+		}
+		
+		//Gotta have a line which lets us check the frame for any errors
+
+		sudokuFile.close();
 	}
 	
 	/**
