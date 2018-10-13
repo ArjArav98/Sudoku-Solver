@@ -21,6 +21,8 @@ This is a program which solves 9x9 Sudoku puzzles. **Written completely in C++**
 7 0 0  6 8 0  0 0 0
 0 2 8  0 0 0  0 0 0
 ```
+Files can have any name or extension.
+
 * Once solved, the Sudoku puzzles shall be displayed like this.
 ```
 +---+---+---+---+---+---+---+---+---+
