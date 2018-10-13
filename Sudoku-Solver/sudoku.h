@@ -10,11 +10,6 @@
 #include<fstream>
 using namespace std;
 
-#define TRUE 1
-#define FALSE 0
-
-typedef int boolean;
-
 /**	
  *	This class provides a data structure which can hold and manipulate the values in a sudoku puzzle.
  *	In this file, we shall call this data structure the 'Sudoku Frame'.
@@ -49,7 +44,7 @@ class SudokuFrame{
 		cout<<"\t   The file must not have a name > 20 characters.\n";
 		cout<<"\t   The file must be in the same directory as this C++ file.\n";
 		cout<<"\t   The file must have all 81 values seperated with spaces.\n";
-		cout<<"\t   Blank cells must be filled in as 0 (eg; 1 0 0 2 0 0 ...).\n\n";
+		cout<<"\t   Blank cells must be filled in as 0 (eg; 1 0 0 2 0 0 ...).\n";
 		cout<<"\t   --> ";
 
 		int option;
@@ -60,7 +55,7 @@ class SudokuFrame{
 		else{
 			while(true){
 				cout<<"\nYou seem to have entered an invalid option. Try again.\n";
-				cout<<"\t  --> ";
+				cout<<"\t   --> ";
 				cin>>option;
 
 				if(option==1) readFrameValues();
@@ -79,8 +74,8 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	void readFrameValues(){
-		cout<<"Enter the values for the Sudoku puzzle here!\n";
-		cout<<"Enter the particular value when prompted. Enter 0 if cell is empty.\n\n";
+		cout<<"Enter the specified value when prompted.\n";
+		cout<<"Enter 0 if cell is empty.\n\n";
 
 		for(rowIter=0; rowIter<9; rowIter++){
 			for(colIter=0; colIter<9; colIter++){
@@ -99,7 +94,7 @@ class SudokuFrame{
 		char filename[20];
 
 		cout<<"\nEnter the name of the file that contains the Sudoku Puzzle.\n";
-		cout<<"\t  --> ";
+		cout<<"\t   --> ";
 		cin>>filename;
 
 		ifstream sudokuFile;
@@ -184,7 +179,6 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	public:void displayFrame(){
-		cout<<"\n";
 		for(rowIter=0; rowIter<9; rowIter++){
 			cout<<"+---+---+---+---+---+---+---+---+---+\n";
 			for(colIter=0; colIter<9; colIter++){
@@ -363,6 +357,19 @@ class SudokuSolver{
 	*/
 	public:SudokuSolver(){
 		recursiveCount=0;
+
+		cout<<"\nThe unsolved Sudoku puzzle!\n";
+		displayFrame();
+		
+		cout<<"\nCalculating possibilities...\n";
+		cout<<"Backtracking across puzzle....\n";
+		cout<<"Validating cells and values...\n\n";
+		
+		solve();
+		cout<<"QED. Your puzzle has been solved!\n";
+		displayFrame();
+
+		cout<<"\n";
 	}
 	
 	/**
@@ -372,13 +379,13 @@ class SudokuSolver{
 	  *	@param currentValue (int) the required value
 	  *	@return (boolean) whether the value is valid or not in the sudoku frame
 	*/
-	public:boolean cellValueValid(int row, int col, int currentValue){
+	public:bool cellValueValid(int row, int col, int currentValue){
 
 		//Checking if value exists in same column
 		for(rowIter=0; rowIter<9; rowIter++){
 			if(rowIter!=row){
 				int comparingValue=frame.getCellValue(rowIter,col);
-				if(comparingValue==currentValue) return FALSE;
+				if(comparingValue==currentValue) return false;
 			}
 		}
 
@@ -386,14 +393,14 @@ class SudokuSolver{
 		for(colIter=0; colIter<9; colIter++){
 			if(colIter!=col){
 				int comparingValue=frame.getCellValue(row,colIter);
-				if(comparingValue==currentValue) return FALSE;
+				if(comparingValue==currentValue) return true;
 			}
 		}
 
 		//Checking if value exists in the same 3x3 square block
-		if(ThreeByThreeGridValid(row,col,currentValue)==FALSE) return FALSE;
+		if(ThreeByThreeGridValid(row,col,currentValue)==false) return false;
 
-		return TRUE;
+		return true;
 	}
 	
 	/**
@@ -403,7 +410,7 @@ class SudokuSolver{
 	  *	@param currentValue (int) required value
 	  *	@return (boolean) whether the value is present or not
 	*/
-	boolean ThreeByThreeGridValid(int row, int col, int currentValue){
+	bool ThreeByThreeGridValid(int row, int col, int currentValue){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
 
@@ -412,11 +419,11 @@ class SudokuSolver{
 
 		for(rowIter=rowStart; rowIter<=rowEnd; rowIter++){
 			for(colIter=colStart; colIter<=colEnd; colIter++){
-				if(frame.getCellValue(rowIter,colIter)==currentValue) return FALSE;
+				if(frame.getCellValue(rowIter,colIter)==currentValue) return false;
 			}
 		}
 
-		return TRUE;	
+		return true;	
 	}
 	
 	/**
@@ -431,7 +438,7 @@ class SudokuSolver{
 		Possibilities possibilities;
 
 		for(iter=1; iter<=9; iter++){
-			if(cellValueValid(row,col,iter))
+			if(cellValueValid(row,col,iter)==true)
 				possibilities.append(iter);
 		}
 
@@ -452,7 +459,7 @@ class SudokuSolver{
 		
 		statsIncrement(); //This is used to see how many times the func is called.
 
-		if(frame.isEditable(row,col)){
+		if(frame.isEditable(row,col)==true){
 
 			Possibilities possibilities;
 			possibilities.copy(getCellPossibilities(row,col));
@@ -511,9 +518,6 @@ class SudokuSolver{
 	*/
 	public:void solve(){
 		int success=singleCellSolve(0,0);
-		
-		if(success==1) cout<<"\nYour Sudoku puzzle has been solved! QED.\n";
-		else cout<<"This didn't work!\n";
 	}
 	
 	/**
