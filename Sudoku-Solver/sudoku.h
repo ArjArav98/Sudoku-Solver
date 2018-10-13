@@ -22,7 +22,7 @@ class SudokuFrame{
 	
 
 	/**	
-	  *	@desc This constructor calls functions which get the values for the Sudoku Frame.
+	  *	@desc This constructor calls the menu() func to provide the menu.
 	  *	@param none
 	  *	@return none
 	*/
@@ -30,6 +30,14 @@ class SudokuFrame{
 		menu();
 	}
 	
+	/**
+	  *	@desc displays a menu to the user when the SudokuFrame objects in instantiated
+	  *	(which is basically at the start of the program) to display all possible options
+	  *	from the user.
+	  *
+	  *	@param none
+	  *	@return none
+	*/
 	void menu(){
 		
 		cout<<"\n======================\n";
@@ -88,7 +96,12 @@ class SudokuFrame{
 			cout<<"-------\n";
 		}
 	}
-
+	
+	/**
+	  *	@desc reads the values from a file containing the frame values seperated by whitespaces.
+	  *	@param none
+	  *	@return none
+	*/
 	void readFrameValuesFile(){
 
 		char filename[20];
@@ -352,7 +365,9 @@ class SudokuSolver{
 	SudokuFrame frame; //The frame object
 	
 	/**
-	  *	@desc The constructor initialises the recursiveCount variable.
+	  *	@desc The constructor initialises the recursiveCount variable and also calls
+	  *	the solve() function which solves the puzzle. It also displays the frames
+	  *	before and after the solving.
 	  *	@param none
 	*/
 	public:SudokuSolver(){
