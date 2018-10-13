@@ -141,7 +141,7 @@ class SudokuFrame{
 	}
 	
 	/**
-	  *	@desc Returns TRUE/FALSE depending on editableFrame values.
+	  *	@desc Returns 0/1 depending on editableFrame values.
 	  *	@param row (int) row of the required cell
  	  *	@param col (int) col of the required cell
 	  *	@return (int) 1 if editable; 0 if not
@@ -377,7 +377,7 @@ class SudokuSolver{
 	  *	@param row (int) row of the required value
 	  *	@param col (int) col of the required value
 	  *	@param currentValue (int) the required value
-	  *	@return (boolean) whether the value is valid or not in the sudoku frame
+	  *	@return (bool) whether the value is valid or not in the sudoku frame
 	*/
 	public:bool cellValueValid(int row, int col, int currentValue){
 
@@ -393,7 +393,7 @@ class SudokuSolver{
 		for(colIter=0; colIter<9; colIter++){
 			if(colIter!=col){
 				int comparingValue=frame.getCellValue(row,colIter);
-				if(comparingValue==currentValue) return true;
+				if(comparingValue==currentValue) return false;
 			}
 		}
 
@@ -408,7 +408,7 @@ class SudokuSolver{
 	  *	@param row (int) row of the required cell
 	  *	@param col (int) col of the required cell
 	  *	@param currentValue (int) required value
-	  *	@return (boolean) whether the value is present or not
+	  *	@return (bool) whether the value is present or not
 	*/
 	bool ThreeByThreeGridValid(int row, int col, int currentValue){
 		int rowStart=(row/3)*3;
