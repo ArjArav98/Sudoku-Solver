@@ -82,18 +82,32 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	void readFrameValues(){
-		cout<<"Enter the specified value when prompted.\n";
+		cout<<"\nEnter the specified value when prompted.\n";
 		cout<<"Enter 0 if cell is empty.\n\n";
 
-		for(rowIter=0; rowIter<9; rowIter++){
+		for(rowIter=0; rowIter<9; rowIter++){ //Iterating over cells to read vals.
 			for(colIter=0; colIter<9; colIter++){
-				cout<<"Enter value for cell["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
-				cin>>sudokuFrame[rowIter][colIter];
+				int enteredValue;
 
-				if(sudokuFrame[rowIter][colIter]==0) editableFrame[rowIter][colIter]=0;
+				cout<<"Enter value for cell["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
+				cin>>enteredValue;
+
+				if(!(enteredValue>=0 && enteredValue<=9)){ //Checking for bounds in input.
+					while(true){ //We loop until valid input is read from user.
+						cout<<"Oops! You seem to have entered a wrong value! Try again.\n";
+						cout<<"Enter value for cell ["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
+						cin>>enteredValue;
+
+						if(enteredValue>=0 && enteredValue<=9) break;
+					}
+				}
+
+				sudokuFrame[rowIter][colIter]=enteredValue;
+
+				if(enteredValue==0) editableFrame[rowIter][colIter]=0;
 				else editableFrame[rowIter][colIter]=1;
 			}
-			cout<<"-------\n";
+			cout<<"-------\n"; //Display a break after every row for convenience.
 		}
 	}
 	
@@ -104,26 +118,33 @@ class SudokuFrame{
 	*/
 	void readFrameValuesFile(){
 
-		char filename[20];
+		char filename[20]; //Getting filename.
 
 		cout<<"\nEnter the name of the file that contains the Sudoku Puzzle.\n";
 		cout<<"\t   --> ";
 		cin>>filename;
 
-		ifstream sudokuFile;
+		ifstream sudokuFile; //Opening file for reading.
 		sudokuFile.open(filename,ios::in);
 
-		for(rowIter=0; rowIter<9; rowIter++){
+		for(rowIter=0; rowIter<9; rowIter++){ //Iterating over file values.
 			for(colIter=0; colIter<9; colIter++){
 				int readValue;
 		
 				sudokuFile>>readValue;
+
+				if(!(readValue>=0 && readValue<=9)){ //Checking bounds for input.
+					cout<<"\nValue "<<((rowIter*9)+colIter+1)<<" in "<<filename;
+					cout<<" seems to be wrong! Correct the value and try again!\n";
+					exit(EXIT_FAILURE);
+				}
+
 				sudokuFrame[rowIter][colIter]=readValue;
 
 				if(sudokuFrame[rowIter][colIter]==0) editableFrame[rowIter][colIter]=0;
 				else editableFrame[rowIter][colIter]=1;
 
-				if(sudokuFile.eof()) break;
+				if(sudokuFile.eof()) break; //Breaking if EOF is reached.
 			}
 		}
 		
@@ -564,3 +585,8 @@ class SudokuSolver{
 	}
 	
 };
+
+int main(){
+	SudokuSolver ss;
+	return 0;
+}
