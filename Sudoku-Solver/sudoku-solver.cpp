@@ -38,7 +38,7 @@ class SudokuFrame{
 	  *	@param none
 	  *	@return none
 	*/
-	void menu(){
+	private:void menu(){
 		
 		cout<<"\n======================\n";
 		cout<<"    Sudoku Solver\n";
@@ -81,7 +81,7 @@ class SudokuFrame{
 	  *	@param none
 	  *	@return none
 	*/
-	void readFrameValues(){
+	private:void readFrameValues(){
 		cout<<"\nEnter the specified value when prompted.\n";
 		cout<<"Enter 0 if cell is empty.\n\n";
 
@@ -116,7 +116,7 @@ class SudokuFrame{
 	  *	@param none
 	  *	@return none
 	*/
-	void readFrameValuesFile(){
+	private:void readFrameValuesFile(){
 
 		char filename[20]; //Getting filename.
 
@@ -324,7 +324,7 @@ class Possibilities{
 	  *	@param none
 	  *	@return (int) the length of the linked list.
 	*/
-	int length(){
+	public:int length(){
 		pos=head->next;
 		int count=0;
 
@@ -342,7 +342,7 @@ class Possibilities{
 	  *	@param possibilities (Possibilities) the object which is to be copied
 	  *	@return none
 	*/
-	void copy(Possibilities possibilities){ //Need to make this clear the old list if exists
+	public:void copy(Possibilities possibilities){ //Need to make this clear the old list if exists
 		int oldLength=possibilities.length();
 		int iter=0;
 		
@@ -363,7 +363,7 @@ class Possibilities{
 	  *	@param none
 	  *	@return none
 	*/
-	void destroy(){
+	private:void destroy(){
 		Node temp;
 		pos=head;
 		while(pos!=NULL){
@@ -415,7 +415,7 @@ class SudokuSolver{
 	  *	@param currentValue (int) the required value
 	  *	@return (bool) whether the value is valid or not in the sudoku frame
 	*/
-	public:bool cellValueValid(int row, int col, int currentValue){
+	private:bool cellValueValid(int row, int col, int currentValue){
 
 		//Checking if value exists in same column
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -446,7 +446,7 @@ class SudokuSolver{
 	  *	@param currentValue (int) required value
 	  *	@return (bool) whether the value is present or not
 	*/
-	bool ThreeByThreeGridValid(int row, int col, int currentValue){
+	private:bool ThreeByThreeGridValid(int row, int col, int currentValue){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
 
@@ -468,7 +468,7 @@ class SudokuSolver{
 	  *	@param col (int) col of the specified cell
 	  *	@return (Possibilities) Possibilities object containing all the possible values.
 	*/
-	public:Possibilities getCellPossibilities(int row, int col){
+	private:Possibilities getCellPossibilities(int row, int col){
 		int iter=0;
 
 		Possibilities possibilities;
@@ -491,7 +491,7 @@ class SudokuSolver{
 	  *	@param col (int) col of the specified cell
 	  *	@return (int) whether the value put in the cell made it a SUCCESS or NOT
 	*/
-	int singleCellSolve(int row, int col){
+	private:int singleCellSolve(int row, int col){
 		
 		statsIncrement(); //This is used to see how many times the func is called.
 
@@ -552,7 +552,7 @@ class SudokuSolver{
 	  *	@param none
 	  *	@return none
 	*/
-	public:void solve(){
+	private:void solve(){
 		int success=singleCellSolve(0,0);
 	}
 	
@@ -562,7 +562,7 @@ class SudokuSolver{
 	  *	@param none
 	  *	@return none
 	*/
-	public:void displayFrame(){
+	private:void displayFrame(){
 		frame.displayFrame();
 	}
 	
@@ -571,7 +571,7 @@ class SudokuSolver{
 	  *	@param none
 	  *	@return none
 	*/
-	void statsIncrement(){
+	private:void statsIncrement(){
 		recursiveCount++;
 	}
 
