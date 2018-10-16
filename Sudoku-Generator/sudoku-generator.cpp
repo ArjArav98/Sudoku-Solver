@@ -37,6 +37,19 @@ class SudokuFrame{
 
 	public:SudokuFrame(){
 		fillFrameWithZeroes();
+		menu();
+	}
+
+	public:void menu(){
+		cout<<"\n=====================\n";
+		cout<<"  Sudoku Generator\n";
+		cout<<"=====================\n\n";
+
+		cout<<"Welcome to Sudoku Generator!\n";
+		cout<<"This generator not only displays the puzzle onscreen, it ";
+		cout<<"also outputs the puzzle to a file.\n";
+		cout<<"(This can even then be used in the Sudoku-Solver program)\n";
+		cout<<"Okay, here goes!\n\n";
 	}
 
 	private:void fillFrameWithZeroes(){
@@ -100,7 +113,7 @@ class SudokuFrame{
 			cout<<"|\n";
 		}
 
-		cout<<"+---+---+---+---+---+---+---+---+---+\n";
+		cout<<"+---+---+---+---+---+---+---+---+---+\n\n";
 
 	}
 
@@ -121,7 +134,10 @@ class SudokuFrame{
 			}
 			file<<"\n";
 		}
-
+		cout<<"\n";		
+	
+		cout<<"Here's your puzzle! You can see it right here on the screen";
+		cout<<"or you can view it\nin the generated file "<<filename<<".\n\n";
 		file.close();
 
 	}
