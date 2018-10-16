@@ -33,15 +33,12 @@ class Random{
 class SudokuFrame{
 	
 	int sudokuFrame[9][9];
-	Random random;
 
 	public:SudokuFrame(){
 		fillFrameWithZeroes();
-		generateFrame();
-		displayFrame();
 	}
 
-	void fillFrameWithZeroes(){
+	private:void fillFrameWithZeroes(){
 		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -50,23 +47,46 @@ class SudokuFrame{
 			}
 		}
 	}
-	
-	/*void generateFrame(){
-		
-		int rowIter;
 
-		for(rowIter=0; rowIter<9; rowIter++){
-			int numOfFilledValues=random.chooseBetween(3,4);
-			int valueIter;
+	public:void setCellValue(int row, int col, int value){
+		sudokuFrame[row][col]=value;
+	}
 
-			for(valueIter=0; valueIter<numOfFilledValues; valueIter++){
-				sudokuFrame[rowIter][random.generate()]=random.generate();		
+	public:bool cellValueValid(int row, int col, int value){
+		int rowIter, colIter;
+
+		for(rowIter=0; rowIter<9; rowIter++)
+			if(sudokuFrame[rowIter][col]==value) return false;
+
+		for(colIter=0; colIter<9; colIter++) 
+			if(sudokuFrame[row][colIter]==value) return false;
+
+		if(ThreeByThreeGridValid(row,col,value)==false) return false;
+
+		return true;
+
+	}
+
+	public:bool ThreeByThreeGridValue(int row, int col, int value){
+		int rowStart=(row/3)*3;
+		int rowEnd=(rowStart+2);
+
+		int colStart=(col/3)*3;
+		int colEnd=(colStart+2);
+
+		int rowIter, colIter;
+
+		for(rowIter=rowStart; rowIter<=rowEnd; rowIter++){
+			for(colIter=colStart; colIter<=colEnd; colIter++){
+				if(sudokuFrame[rowIter][colIter]==value) return false;
 			}
 		}
+		
+		return true;
 
-	}*/
-
-	private:void displayFrame(){
+	}
+	
+	public:void displayFrame(){
 		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -84,7 +104,18 @@ class SudokuFrame{
 	}
 };
 
-int main(){
+class SudokuGenerator{
+	
 	SudokuFrame frame;
+	Random random;
+
+	public:void generateValues(){
+				
+	}
+
+};
+
+int main(){
+	SudokuGenerator gen;
 	return 0;
 }
