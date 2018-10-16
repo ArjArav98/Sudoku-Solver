@@ -1,5 +1,6 @@
 #include<iostream>
 #include<ctime>
+#include<fstream>
 using namespace std;
 
 class Random{
@@ -19,7 +20,7 @@ class Random{
 		
 		randomCount+=7;		
 
-		return ((number1*number2)+randomCount)%9;
+		return ((number1*number2)+randomCount);
 	}
 
 	public:int chooseBetween(int lower, int upper){
@@ -67,7 +68,7 @@ class SudokuFrame{
 
 	}
 
-	public:bool ThreeByThreeGridValue(int row, int col, int value){
+	public:bool ThreeByThreeGridValid(int row, int col, int value){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
 
@@ -102,6 +103,29 @@ class SudokuFrame{
 		cout<<"+---+---+---+---+---+---+---+---+---+\n";
 
 	}
+
+	public:void printFrame(){
+		
+		int rowIter, colIter;
+		char filename[30];
+
+		cout<<"Enter a filename to which the puzzle will be printed to --> ";
+		cin>>filename;
+
+		ofstream file;
+		file.open(filename,ios::out);
+
+		for(rowIter=0; rowIter<9; rowIter++){
+			for(colIter=0; colIter<9; colIter++){
+				file<<sudokuFrame[rowIter][colIter]<<" ";
+			}
+			file<<"\n";
+		}
+
+		file.close();
+
+	}
+
 };
 
 class SudokuGenerator{
@@ -109,8 +133,40 @@ class SudokuGenerator{
 	SudokuFrame frame;
 	Random random;
 
+	public:SudokuGenerator(){
+		generateValues();
+		frame.displayFrame();
+		frame.printFrame();
+	}
+
 	public:void generateValues(){
+		int rowIter, colIter;
+
+		for(rowIter=0; rowIter<9; rowIter++){
+			
+			int numOfFilledValues=random.chooseBetween(1,4);
+			int valIter;
+
+			for(valIter=0; valIter<numOfFilledValues; valIter++){
+				int randomCol=random.chooseBetween(0,8);
+				int randomVal=random.chooseBetween(1,9);
+
+				if(frame.cellValueValid(rowIter,randomCol,randomVal))
+					frame.setCellValue(rowIter,randomCol,randomVal);
+				else{
+					while(true){
+						randomVal=random.chooseBetween(1,9);
+						if(frame.cellValueValid(rowIter,randomCol,randomVal))
+							break;
+					}
+
+					frame.setCellValue(rowIter,randomCol,randomVal);
 				
+				}
+
+			} //The valIter loop ends here
+
+		} //The rowIter loop ends here
 	}
 
 };
