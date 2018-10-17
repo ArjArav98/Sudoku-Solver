@@ -3,14 +3,28 @@
 #include<fstream>
 using namespace std;
 
+/**
+  *	@desc this class contains member functions which generates random values.
+  *	These values are not actually random, but are random as can be. There are
+  *	two functions in this class:- generate() and chooseBetween().
+*/
 class Random{
 	
-	int randomCount;
-
+	int randomCount; //a count variable
+	
+	/**
+	  *	@desc this constructor initialises the randomCount variable to 0.
+	  *	@param none
+	*/
 	public:Random(){
 		randomCount=0;
 	}
 	
+	/**
+	  *	@desc using the current time, function generates a random number.
+	  *	@param none
+	  *	@return (int) the randomly generated number
+	*/
 	public:int generate(){
 		time_t now = time(0);
 		tm *curtime = localtime(&now);
@@ -22,7 +36,14 @@ class Random{
 
 		return ((number1*number2)+randomCount);
 	}
-
+	
+	/**
+	  *	@desc when given an upper value and a lower value, this function
+	  *	randomly chooses values between and including the two numbers.
+	  *	@param lower (int) the lower limit
+	  *	@param upper (int) the upper limit
+	  *	@return (int) a random value between or equal to one of the 2 nums.
+	*/
 	public:int chooseBetween(int lower, int upper){
 		int difference=(upper+1)-lower;
 		int random=generate()%difference;
@@ -31,15 +52,28 @@ class Random{
 
 };
 
+/**
+  *	@desc this class provides a data structure/object which contains the Sudoku
+  *	puzzle along with other actions that might be needed to be performed on it.
+*/
 class SudokuFrame{
 	
-	int sudokuFrame[9][9];
+	int sudokuFrame[9][9]; //The 9x9 matrix that contains the values of the puzzle
 
+	/**
+	  *	@desc this constructor calls the functions menu() and fillFrameWithZeroes().
+	*/
 	public:SudokuFrame(){
 		fillFrameWithZeroes();
 		menu();
 	}
-
+	
+	/**
+	  *	@desc provides a menu for the user which it makes more convenient and better
+	  *	appearance-wise.
+	  *	@param none
+	  *	@return none
+	*/
 	public:void menu(){
 		cout<<"\n=====================\n";
 		cout<<"  Sudoku Generator\n";
@@ -52,6 +86,12 @@ class SudokuFrame{
 		cout<<"Okay, here goes!\n\n";
 	}
 
+	/**
+	  *	@desc fills all the values of the matrix with zeroes. This is so that, later
+	  *	on, we do not need to fill all the blank values with zero.
+	  *	@param none
+	  *	@return none
+	*/
 	private:void fillFrameWithZeroes(){
 		int rowIter, colIter;
 
@@ -61,11 +101,26 @@ class SudokuFrame{
 			}
 		}
 	}
-
+	
+	/**
+	  *	@desc this sets the required cell value with the specified value.
+	  *	@param row (int) row of the required cell
+	  *	@param col (int) col of the required cell
+	  *	@param value (int) the specified value
+	  *	@return none
+	*/
 	public:void setCellValue(int row, int col, int value){
 		sudokuFrame[row][col]=value;
 	}
-
+	
+	/**
+	  *	@desc tells us whether the value in the specified cell is valid
+	  *	or not.
+	  *	@param row (int) row of the specified cell
+	  *	@param col (int) col of the specified cell
+	  *	@param value (int) the specified value
+	  *	@return (bool) whether the value in the cell is valid or not.
+	*/
 	public:bool cellValueValid(int row, int col, int value){
 		int rowIter, colIter;
 
@@ -80,7 +135,14 @@ class SudokuFrame{
 		return true;
 
 	}
-
+	
+	/**
+	  *	@desc tells us whether the value in a cell is valid for its 3x3 grid.
+	  *	@param row (int) row of the required cell
+	  *	@param col (int) col of the required cell
+	  *	@param value (int) the specified value
+	  *	@return (bool) whether the value in the cell is valid or not.
+	*/
 	public:bool ThreeByThreeGridValid(int row, int col, int value){
 		int rowStart=(row/3)*3;
 		int rowEnd=(rowStart+2);
@@ -100,6 +162,11 @@ class SudokuFrame{
 
 	}
 	
+	/**
+	  *	@desc displays the frame in an aesthetically pleasing way.
+	  *	@param none
+	  *	@return none
+	*/
 	public:void displayFrame(){
 		int rowIter, colIter;
 
@@ -116,7 +183,13 @@ class SudokuFrame{
 		cout<<"+---+---+---+---+---+---+---+---+---+\n\n";
 
 	}
-
+	
+	/**
+	  *	@desc outputs the contents of the sudoku puzzle into a
+	  *	specified file.
+	  *	@param none
+	  *	@return none
+	*/
 	public:void printFrame(){
 		
 		int rowIter, colIter;
@@ -144,17 +217,33 @@ class SudokuFrame{
 
 };
 
+/**
+  *	@desc this class uses the objects of classes defined before and also contains
+  *	member functions which randomly generate values and put them into random cols.
+*/
 class SudokuGenerator{
 	
 	SudokuFrame frame;
 	Random random;
 
+	/**
+	  *	@desc this constructor calls functions which randomly generate values,
+	  *	displays the finished puzzle and outputs it into a file.
+	*/
 	public:SudokuGenerator(){
 		generateValues();
 		frame.displayFrame();
 		frame.printFrame();
 	}
-
+	
+	/**
+	  *	@desc for every row in the puzzle, this function randomly decides how many
+	  *	values (between 2 and 4) to fill in the row, randomly decided which cols
+	  *	to fill them in and randomly decided what these values should be.
+	  *
+	  *	@param none
+	  *	@return none
+	*/
 	public:void generateValues(){
 		int rowIter, colIter;
 

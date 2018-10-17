@@ -11,8 +11,8 @@
 using namespace std;
 
 /**	
- *	This class provides a data structure which can hold and manipulate the values in a sudoku puzzle.
- *	In this file, we shall call this data structure the 'Sudoku Frame'.
+  *	This class provides a data structure which can hold and manipulate the values in a sudoku puzzle.
+  *	In this file, we shall call this data structure the 'Sudoku Frame'.
 */
 class SudokuFrame{
 	
