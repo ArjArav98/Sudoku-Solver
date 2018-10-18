@@ -120,7 +120,7 @@ class SudokuFrame{
 	*/
 	private:void readFrameValuesFile(){
 
-		char filename[20]; //Getting filename.
+		char filename[30]; //Getting filename.
 
 		cout<<"\nEnter the name of the file that contains the Sudoku Puzzle.\n";
 		cout<<"\t   --> ";
