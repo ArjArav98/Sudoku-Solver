@@ -1,3 +1,12 @@
+/*
+ *======================
+ *   Sudoku Generator
+ *======================
+ *
+ * Started On: October 15th
+ * Author: Arjun Aravind
+ * Objective: Generation of Sudoku puzzles.
+*/
 #include<iostream>
 #include<ctime>
 #include<fstream>

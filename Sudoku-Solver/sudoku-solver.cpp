@@ -1,10 +1,12 @@
-//======================
-//    Sudoku Solver
-//======================
-//
-//Started On - October 2nd, 2018
-//Author - Arjun Aravind
-//Objective - This is an application written in C++ which takes in Sudoku puzzles and outputs the solution.
+/*
+ *=====================
+ *   Sudoku Solver
+ *=====================
+ *
+ * Started On - October 2nd, 2018
+ * Author - Arjun Aravind
+ * Objective - Takes in Sudoku puzzles and outputs the solution.
+*/
 
 #include<iostream>
 #include<fstream>
