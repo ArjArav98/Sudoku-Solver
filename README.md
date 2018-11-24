@@ -3,11 +3,11 @@ These are a suite of C++ programs which deal with Sudoku Puzzles. The name might
 
 ## Contents
 * [Sudoku Solver](#sudoku-solver)
-    * Getting Started (Usage)
-    * How It Works
+    * [Getting Started (Usage)](#getting-started)
+    * [How It Works](#how-it-works)
 * [Sudoku Validator](#sudoku-validator)
-    * Getting Started (Usage)
-    * How It Works
+    * [Getting Started (Usage)](#getting-started-1)
+    * [How It Works](#how-it-works-1)
 * [Acknowledgements](#acknowledgements)
 * [Tools](#tools)
 
