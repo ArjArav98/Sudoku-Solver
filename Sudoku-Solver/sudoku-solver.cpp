@@ -215,16 +215,29 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	public:void displayFrame(){
+
+		cout<<"++=====================================++";
+
 		for(rowIter=0; rowIter<9; rowIter++){
-			cout<<"+---+---+---+---+---+---+---+---+---+\n";
+			int cellIter=1;
+
+			cout<<"\n||";
 			for(colIter=0; colIter<9; colIter++){
-				cout<<"| ";
-				if(sudokuFrame[rowIter][colIter]==0) cout<<"  ";
-				else cout<<sudokuFrame[rowIter][colIter]<<" ";
+				if(cellIter==3){
+					cout<<" "<<sudokuFrame[rowIter][colIter]<<" ";
+					cout<<"||";
+					cellIter=1;
+				}
+				else{
+					cout<<" "<<sudokuFrame[rowIter][colIter]<<"  ";
+					cellIter++;	
+				}
 			}
-			cout<<"|\n";
+
+			if(rowIter%3!=2) cout<<"\n++-----------++-----------++-----------++";
+			else cout<<"\n++=====================================++";
 		}
-		cout<<"+---+---+---+---+---+---+---+---+---+\n";
+
 	}
 	
 };
@@ -396,18 +409,15 @@ class SudokuSolver{
 	public:SudokuSolver(){
 		recursiveCount=0;
 
-		cout<<"\nThe unsolved Sudoku puzzle!\n";
-		displayFrame();
-		
 		cout<<"\nCalculating possibilities...\n";
 		cout<<"Backtracking across puzzle....\n";
 		cout<<"Validating cells and values...\n\n";
 		
 		solve();
-		cout<<"QED. Your puzzle has been solved!\n";
+		cout<<"QED. Your puzzle has been solved!\n\n";
 		displayFrame();
 
-		cout<<"\n";
+		cout<<"\n\n";
 	}
 	
 	/**
