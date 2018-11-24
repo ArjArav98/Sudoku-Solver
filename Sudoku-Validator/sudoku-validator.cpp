@@ -17,9 +17,80 @@ class SudokuFrame{
 	int sudokuFrame[9][9];
 
 	public:SudokuFrame(){
-		//menu();
-		readFrameValuesFile();
+		menu();
 	}
+
+	private:void menu(){
+
+                cout<<"\n======================\n";
+                cout<<"   Sudoku Validator\n";
+                cout<<"======================\n\n";
+
+                cout<<"Welcome to Sudoku Validator!\n";
+                cout<<"Before we start, you will have to input the puzzle into this program.\n\n";
+                cout<<"You can either:-\n";
+                cout<<"\t1. Input the puzzle by entering the values manually. (Enter 1)\n";
+                cout<<"\t2. Input the puzzle by reading a file with values in it. (Enter 2)\n";
+                cout<<"\t   The file must not have a name > 30 characters.\n";
+                cout<<"\t   The file must be in the same directory as this C++ file.\n";
+                cout<<"\t   The file must have all 81 values seperated with spaces.\n";
+                cout<<"\t   Blank cells must be filled in as 0 (eg; 1 2 9 8 1 9 ...).\n";
+                cout<<"\t   --> ";
+
+                int option;
+                cin>>option;
+
+                if(option==1) readFrameValues();
+                else if(option==2) readFrameValuesFile();
+                else{
+                        while(true){
+                                cout<<"\nYou seem to have entered an invalid option. Try again.\n";
+                                cout<<"\t   --> ";
+                                cin>>option;
+
+                                if(option==1) readFrameValues();
+                                else if(option==2) readFrameValuesFile();
+                                else continue;
+
+                                break;
+                        }
+                }
+
+        }
+
+	/**
+          *     @desc Reads the values for the Sudoku Frame cell-by-cell.
+          *     @param none
+          *     @return none
+        */
+        private:void readFrameValues(){
+                cout<<"\nEnter the specified value when prompted.\n";
+                cout<<"Enter 0 if cell is empty.\n\n";
+
+		int rowIter, colIter;
+
+                for(rowIter=0; rowIter<9; rowIter++){ //Iterating over cells to read vals.
+                        for(colIter=0; colIter<9; colIter++){
+                                int enteredValue;
+
+                                cout<<"Enter value for cell["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
+                                cin>>enteredValue;
+
+                                if(!(enteredValue>=1 && enteredValue<=9)){ //Checking for bounds in input.
+                                        while(true){ //We loop until valid input is read from user.
+                                                cout<<"Oops! You seem to have entered a wrong value! Try again.\n";
+                                                cout<<"Enter value for cell ["<<rowIter+1<<"]["<<colIter+1<<"] --> ";
+                                                cin>>enteredValue;
+
+                                                if(enteredValue>=1 && enteredValue<=9) break;
+                                        }
+                                }
+
+                                sudokuFrame[rowIter][colIter]=enteredValue;
+                        }
+                        cout<<"-------\n"; //Display a break after every row for convenience.
+                }
+        }
 	
 	/**
 	  * @desc This function reads values from a specified file.
@@ -32,7 +103,7 @@ class SudokuFrame{
 		char filename[30];
 		ifstream file;
 		
-		cout<<"Enter the name of the file which contains the puzzle --> ";
+		cout<<"\nEnter the name of the file which contains the puzzle --> ";
 		cin>>filename;
 
 		file.open(filename,ios::in);
@@ -96,7 +167,7 @@ class SudokuValidator{
 			if(rowsAreValid()){
 				if(columnsAreValid()){
 					if(ThreeByThreeSquaresAreValid()){
-						cout<<"Your puzzle is valid!\n";
+						cout<<"\nYour puzzle is valid!\n\n";
 					}
 					else cout<<"Your puzzle in invalid!\n";
 				}
