@@ -21,6 +21,11 @@ class SudokuFrame{
 		readFrameValuesFile();
 	}
 	
+	/**
+	  * @desc This function reads values from a specified file.
+	  * @param none
+	  * @return none
+	 */
 	private:void readFrameValuesFile(){
 		
 		int rowIter, colIter;
@@ -45,7 +50,7 @@ class SudokuFrame{
 			}
 		}
 		
-		
+		//If there aren't 81 values in the file, then it is invalid.	
 		if((colIter*rowIter)!=81){
 			cout<<"Oops! The file doesn't have the required amount of values.\n";
 			cout<<"Try again!\n";
@@ -56,6 +61,12 @@ class SudokuFrame{
 
 	}
 
+	/**
+	  * @desc Returns the value of a cell of a specified col and row.
+	  * @param row (int) The specified row.
+	  * @param col (int) The specified column.
+	  * @return The value in the specified cell.
+	 */
 	public:int getCellValue(int row, int col){
 		return sudokuFrame[row][col];
 	}
@@ -66,11 +77,20 @@ class SudokuFrame{
 class SudokuValidator{
 
 	SudokuFrame frame;
-
+	
+	/**
+	  * @desc Calls the function which validates the values in the Sudoku frame.
+	  * @param none
+	 */
 	public:SudokuValidator(){
 		validateFrame();		
 	}
 
+	/**
+	  * @desc Calls functions which validates the rows, columns and 3x3 grids.
+	  * @param none
+	  * @return none
+	*/
 	private:void validateFrame(){
 		if(valuesAreValid()){
 			if(rowsAreValid()){
@@ -86,7 +106,13 @@ class SudokuValidator{
 		}
 		else cout<<"Your puzzle is invalid!\n";
 	}
+	
 
+	/**
+	  * @desc Checks if all values in the frame are between the ranges of 1-9.
+	  * @param none
+	  * @return (bool) Whether all the values are valid or not.
+	*/
 	private:bool valuesAreValid(){		
 		int rowIter, colIter;
 
@@ -100,6 +126,11 @@ class SudokuValidator{
 		return true;
 	}
 
+	/**
+	  * @desc Checks if the rows are valid in the frame.
+	  * @param none	
+	  * @return (bool) Whether the rows are valid or not.
+	*/
 	private:bool rowsAreValid(){
 		
 		int rowIter, colIter, valIter;
@@ -118,6 +149,11 @@ class SudokuValidator{
 		return true;
 	}
 
+	/**
+	  * @desc Checks if the columns in the frame are valid.
+	  * @param none
+	  * @return (bool) Whether the columns are valid or not.
+	*/
 	private:bool columnsAreValid(){
 		
 		int rowIter, colIter, valIter;
@@ -135,7 +171,12 @@ class SudokuValidator{
 		
 		return true;
 	}
-
+	
+	/**
+	  * @desc Checks if the 3x3 grids in the frame are valid.
+	  * @param none
+	  * @return (bool) Whether the 3x3 grids are valid or not.
+	*/
 	private:bool ThreeByThreeSquaresAreValid(){
 		
 		int squareIter, valIter;
@@ -154,6 +195,12 @@ class SudokuValidator{
 		return true;
 	}
 
+	/**
+	  * @desc Checks whether a given value is present in a specified row.
+	  * @param row (int) The specified row.
+	  * @param value (int) The value to be checked for.
+	  * @return (bool) Whether the value is present in the row or not.
+	*/
 	private:bool rowContains(int row, int value){
 		int colIter;
 		for(colIter=0; colIter<9; colIter++){
@@ -163,6 +210,12 @@ class SudokuValidator{
 		return false;
 	}
 
+	/**
+	  * @desc Checks whether a given value is present in the specified column.
+	  * @param col (int) The specified column.
+	  * @param value (int) The value to be checked for.
+	  * @return (bool) Whether the value is present in the col or not.
+	*/
 	private:bool columnContains(int col, int value){
 		int rowIter=0;
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -172,6 +225,12 @@ class SudokuValidator{
 		return false;
 	}
 
+	/**
+	  * @desc Checks whether a given value is present in the specified 3x3 grid.
+	  * @param squareNumber (int) The 3x3 grid specified. The available grids are 0-8.
+	  * @param value (int) The value to be checked for.
+	  * @return (bool) Whether the value is present or not.
+	*/
 	private:bool squareContains(int squareNumber, int value){
 		int rowStart=(squareNumber/3)*3;
 		int rowEnd=rowStart+2;
