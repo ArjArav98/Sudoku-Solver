@@ -35,7 +35,7 @@ class SudokuFrame{
 	}
 	
 	/**
-	  *	@desc displays a menu to the user when the SudokuFrame objects is instantiated
+	  *	@desc Displays a menu to the user when the SudokuFrame objects is instantiated
 	  *	(which is basically at the start of the program).
 	  *
 	  *	@param none
@@ -89,7 +89,7 @@ class SudokuFrame{
 	}
 	
 	/**
-	  *	@desc clears frame of all values, other than the question values, from
+	  *	@desc Clears frame of all values, other than the question values, from
 	  *	the specified cell to the last cell.
 	  *	@param row (int) row of the specified cell
 	  *	@param col (int) col of the specified cell
@@ -132,7 +132,7 @@ class Possibilities{
 	
 
 	/**	
-	  *	@desc this constructor initialises the head (or sentinel) node
+	  *	@desc This constructor initialises the head (or sentinel) node
 	  *	@param none
 	*/
 	public:Possibilities(){
@@ -141,7 +141,7 @@ class Possibilities{
 	}
 	
 	/**	
-	  *	@desc this destructor destroys the linked list once the object
+	  *	@desc This destructor destroys the linked list once the object
  	  *	has finished its lifespan. Calls the destroy() function.
 	*/
 	public:~Possibilities(){
@@ -149,7 +149,7 @@ class Possibilities{
 	}
 	
 	/**	
-	  *	@desc this functions takes in a number and adds it as a node in
+	  *	@desc This function takes in a number and adds it as a node in
 	  *	the linked list.
 	  *	@param number (int) the number which we want to append
 	  *	@return none
@@ -171,8 +171,7 @@ class Possibilities{
 	}
 	
 	/**	
-		operator[]
-	  *	@desc an operator overload function which overloads the [] operator.
+	  *	@desc An operator overload function which overloads the [] operator.
 	  *	@param index (int) the index of the required node in the linked list.
 	  *	@return (int) the value contained in the specified node.
 	*/
@@ -190,9 +189,8 @@ class Possibilities{
 		return -1;
 	}
 
-	/**	print()
-
-	  *	@desc prints the values inside all the nodes of the linked list.
+	/**
+	  *	@desc Prints the values inside all the nodes of the linked list.
 	  *	@param none
 	  *	@return none
 	*/
@@ -206,7 +204,7 @@ class Possibilities{
 	}
 
 	/**
-	  *	@desc returns the length of the linked list.
+	  *	@desc Returns the length of the linked list.
 	  *	@param none
 	  *	@return (int) the length of the linked list.
 	*/
@@ -223,7 +221,7 @@ class Possibilities{
 	}
 	
 	/**
-	  *	@desc this function takes in a possibilities object and copies
+	  *	@desc This function takes in a possibilities object and copies
 	  *	the contents into THIS object.
 	  *	@param possibilities (Possibilities) the object which is to be copied
 	  *	@return none
@@ -245,7 +243,7 @@ class Possibilities{
 	}
 	
 	/**
-	  *	@desc frees all the nodes in the linked list
+	  *	@desc Frees all the nodes in the linked list.
 	  *	@param none
 	  *	@return none
 	*/
@@ -346,7 +344,7 @@ class SudokuSolver{
 	}
 	
 	/**
-	  *	@desc gets the possible values and assigns them to the possibilities list.
+	  *	@desc Gets the possible values and assigns them to the possibilities list.
 	  *	@param row (int) row of the specified cell
 	  *	@param col (int) col of the specified cell
 	  *	@return (Possibilities) Possibilities object containing all the possible values.
@@ -365,7 +363,7 @@ class SudokuSolver{
 	}
 	
 	/**	
-	  *	@desc the recursive function which does all the work, this iterates over the
+	  *	@desc The recursive function which does all the work, this iterates over the
 	  *	possible values for the specified cell one-by-one. Once a value has been filled, it
 	  *	goes to the next cell. Here, the same thing happens. If none of the possible values
 	  *	work out, then the function backtracks to the previous cell.
@@ -431,7 +429,7 @@ class SudokuSolver{
 	}
 
 	/**
-	  *	@desc calls the singleCellSolve() func and prints a success/fail mesg.
+	  *	@desc Calls the singleCellSolve() func and prints a success/fail mesg.
 	  *	@param none
 	  *	@return none
 	*/
@@ -440,7 +438,7 @@ class SudokuSolver{
 	}
 	
 	/**
-	  *	@desc displays the sudoku frame by calling the displayFrame() func of the
+	  *	@desc Displays the sudoku frame by calling the displayFrame() func of the
 	  *	SudokuFrame object.
 	  *	@param none
 	  *	@return none
@@ -450,7 +448,7 @@ class SudokuSolver{
 	}
 	
 	/**
-	  *	@desc this increments the count variable to keep track of the recursions done.
+	  *	@desc This function increments the count variable to keep track of the recursions done.
 	  *	@param none
 	  *	@return none
 	*/
@@ -459,7 +457,7 @@ class SudokuSolver{
 	}
 
 	/**
-	  *	@desc this displays the number of times recursion has happened.
+	  *	@desc This displays the number of times recursion has happened.
 	  *	@param none
 	  *	@return none
 	*/
