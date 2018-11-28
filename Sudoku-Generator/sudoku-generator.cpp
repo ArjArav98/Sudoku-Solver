@@ -23,18 +23,20 @@ class SudokuFrame{
 	
 
 	/**	
-	  *	@desc This constructor calls the menu() func to provide the menu.
+	  *	@desc This constructor calls the menu() func to provide the menu. It also
+	  *	calls the setZeros() func to set all cells to the default 0 value.
+	  *
 	  *	@param none
 	  *	@return none
 	*/
 	public:SudokuFrame(){
 		menu();
+		setZeros();
 	}
 	
 	/**
-	  *	@desc displays a menu to the user when the SudokuFrame objects in instantiated
-	  *	(which is basically at the start of the program) to display all possible options
-	  *	from the user.
+	  *	@desc displays a menu to the user when the SudokuFrame objects is instantiated
+	  *	(which is basically at the start of the program).
 	  *
 	  *	@param none
 	  *	@return none
@@ -46,32 +48,23 @@ class SudokuFrame{
 		cout<<"=======================\n\n";
 
 		cout<<"Welcome to Sudoku Generator!\n";
-		cout<<"Before we start, you will have to input the difficulty of the puzzle.\n\n";
-		cout<<"You can choose from:-\n";
-		cout<<"\tEASY (Enter 1)\n";
-		cout<<"\tMEDIUM (Enter 2)\n";
-		cout<<"\tHARD (Enter 3)\n";
-		cout<<"\t   --> ";
+		cout<<"We shall begin generating your puzzle now.\n\n";
 
-		int option;
-		cin>>option;
+	}
 
-		if(option==1); //doEasy();
-		else if(option==2) //doMedium();
-		else{
-			while(true){
-				cout<<"\nYou seem to have entered an invalid option. Try again.\n";
-				cout<<"\t   --> ";
-				cin>>option;
-
-				if(option==1) readFrameValues();
-				else if(option==2) readFrameValuesFile();
-				else continue;
-
-				break;
+	/**
+	  *	@desc Fills all the values of the board with 0, the value representing
+	  *	an empty cell in this program.
+	  *	
+	  *	@param none
+	  *	@return none
+	*/
+	private:void setZeros(){
+		for(rowIter=0; rowIter<9; rowIter++){
+			for(colIter=0; colIter<9; colIter++){
+				sudokuFrame[rowIter][colIter]=0;
 			}
 		}
-
 	}
 
 	/**
