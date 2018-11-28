@@ -19,7 +19,15 @@ class SudokuFrame{
 	public:SudokuFrame(){
 		menu();
 	}
-
+	
+	/**
+	  *	@desc This function generates a menu for the user at the starting of the
+	  *	program execution. This lets the user select the input method for entering
+	  *	the values for the Sudoku Puzzle into the SudokuFrame object.
+	  *
+	  *	@param none
+	  *	@return none
+	*/
 	private:void menu(){
 
                 cout<<"\n======================\n";
@@ -93,9 +101,9 @@ class SudokuFrame{
         }
 	
 	/**
-	  * @desc This function reads values from a specified file.
-	  * @param none
-	  * @return none
+	  *	@desc This function reads values from a specified file.
+	  *	@param none
+	  *	@return none
 	 */
 	private:void readFrameValuesFile(){
 		
@@ -133,10 +141,10 @@ class SudokuFrame{
 	}
 
 	/**
-	  * @desc Returns the value of a cell of a specified col and row.
-	  * @param row (int) The specified row.
-	  * @param col (int) The specified column.
-	  * @return The value in the specified cell.
+	  *	@desc Returns the value of a cell of a specified col and row.
+	  *	@param row (int) The specified row.
+	  *	@param col (int) The specified column.
+	  *	@return The value in the specified cell.
 	 */
 	public:int getCellValue(int row, int col){
 		return sudokuFrame[row][col];
@@ -150,17 +158,17 @@ class SudokuValidator{
 	SudokuFrame frame;
 	
 	/**
-	  * @desc Calls the function which validates the values in the Sudoku frame.
-	  * @param none
+	  *	@desc Calls the function which validates the values in the Sudoku frame.
+	  *	@param none
 	 */
 	public:SudokuValidator(){
 		validateFrame();		
 	}
 
 	/**
-	  * @desc Calls functions which validates the rows, columns and 3x3 grids.
-	  * @param none
-	  * @return none
+	  *	@desc Calls functions which validates the rows, columns and 3x3 grids.
+	  *	@param none
+	  *	@return none
 	*/
 	private:void validateFrame(){
 		if(valuesAreValid()){
@@ -180,9 +188,9 @@ class SudokuValidator{
 	
 
 	/**
-	  * @desc Checks if all values in the frame are between the ranges of 1-9.
-	  * @param none
-	  * @return (bool) Whether all the values are valid or not.
+	  *	@desc Checks if all values in the frame are between the ranges of 1-9.
+	  *	@param none
+	  *	@return (bool) Whether all the values are valid or not.
 	*/
 	private:bool valuesAreValid(){		
 		int rowIter, colIter;
@@ -198,9 +206,9 @@ class SudokuValidator{
 	}
 
 	/**
-	  * @desc Checks if the rows are valid in the frame.
-	  * @param none	
-	  * @return (bool) Whether the rows are valid or not.
+	  *	@desc Checks if the rows are valid in the frame.
+	  *	@param none	
+	  *	@return (bool) Whether the rows are valid or not.
 	*/
 	private:bool rowsAreValid(){
 		
@@ -221,9 +229,9 @@ class SudokuValidator{
 	}
 
 	/**
-	  * @desc Checks if the columns in the frame are valid.
-	  * @param none
-	  * @return (bool) Whether the columns are valid or not.
+	  *	@desc Checks if the columns in the frame are valid.
+	  *	@param none
+	  *	@return (bool) Whether the columns are valid or not.
 	*/
 	private:bool columnsAreValid(){
 		
@@ -244,9 +252,9 @@ class SudokuValidator{
 	}
 	
 	/**
-	  * @desc Checks if the 3x3 grids in the frame are valid.
-	  * @param none
-	  * @return (bool) Whether the 3x3 grids are valid or not.
+	  *	@desc Checks if the 3x3 grids in the frame are valid.
+	  *	@param none
+	  *	@return (bool) Whether the 3x3 grids are valid or not.
 	*/
 	private:bool ThreeByThreeSquaresAreValid(){
 		
@@ -267,10 +275,10 @@ class SudokuValidator{
 	}
 
 	/**
-	  * @desc Checks whether a given value is present in a specified row.
-	  * @param row (int) The specified row.
-	  * @param value (int) The value to be checked for.
-	  * @return (bool) Whether the value is present in the row or not.
+	  *	@desc Checks whether a given value is present in a specified row.
+	  *	@param row (int) The specified row.
+	  *	@param value (int) The value to be checked for.
+	  *	@return (bool) Whether the value is present in the row or not.
 	*/
 	private:bool rowContains(int row, int value){
 		int colIter;
@@ -282,10 +290,10 @@ class SudokuValidator{
 	}
 
 	/**
-	  * @desc Checks whether a given value is present in the specified column.
-	  * @param col (int) The specified column.
-	  * @param value (int) The value to be checked for.
-	  * @return (bool) Whether the value is present in the col or not.
+	  *	@desc Checks whether a given value is present in the specified column.
+	  *	@param col (int) The specified column.
+	  *	@param value (int) The value to be checked for.
+	  *	@return (bool) Whether the value is present in the col or not.
 	*/
 	private:bool columnContains(int col, int value){
 		int rowIter=0;
@@ -297,10 +305,10 @@ class SudokuValidator{
 	}
 
 	/**
-	  * @desc Checks whether a given value is present in the specified 3x3 grid.
-	  * @param squareNumber (int) The 3x3 grid specified. The available grids are 0-8.
-	  * @param value (int) The value to be checked for.
-	  * @return (bool) Whether the value is present or not.
+	  *	@desc Checks whether a given value is present in the specified 3x3 grid.
+	  *	@param squareNumber (int) The 3x3 grid specified. The available grids are 0-8.
+	  *	@param value (int) The value to be checked for.
+	  *	@return (bool) Whether the value is present or not.
 	*/
 	private:bool squareContains(int squareNumber, int value){
 		int rowStart=(squareNumber/3)*3;
