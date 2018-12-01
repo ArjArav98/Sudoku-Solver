@@ -20,8 +20,6 @@ class SudokuFrame{
 	
 	int sudokuFrame[9][9]; //This pointer will hold all the values in the matrix.
 	int editableFrame[9][9]; //This pointer will tell us all the values which are editable.
-	int rowIter, colIter; //iterator variables
-	
 
 	/**	
 	  *	@desc This constructor calls the menu() func to provide the menu.
@@ -86,6 +84,8 @@ class SudokuFrame{
 	private:void readFrameValues(){
 		cout<<"\nEnter the specified value when prompted.\n";
 		cout<<"Enter 0 if cell is empty.\n\n";
+		
+		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){ //Iterating over cells to read vals.
 			for(colIter=0; colIter<9; colIter++){
@@ -128,6 +128,8 @@ class SudokuFrame{
 
 		ifstream sudokuFile; //Opening file for reading.
 		sudokuFile.open(filename,ios::in);
+		
+		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){ //Iterating over file values.
 			for(colIter=0; colIter<9; colIter++){
@@ -194,6 +196,7 @@ class SudokuFrame{
 	*/
 	public:void clearFrameFrom(int row, int col){
 		int jcount=0;
+		int rowIter, colIter;
 
 		for(rowIter=row; rowIter<9; rowIter++){
 			
@@ -217,6 +220,7 @@ class SudokuFrame{
 	public:void displayFrame(){
 
 		cout<<"++=====================================++";
+		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){
 			int cellIter=1;
@@ -395,7 +399,6 @@ class Possibilities{
 */
 class SudokuSolver{
 	
-	int rowIter, colIter; //Iter variables
 	int recursiveCount; //Stats variable
 	SudokuFrame frame; //The frame object
 	
@@ -427,6 +430,7 @@ class SudokuSolver{
 	  *	@return (bool) whether the value is valid or not in the sudoku frame
 	*/
 	private:bool cellValueValid(int row, int col, int currentValue){
+		int rowIter, colIter;
 
 		//Checking if value exists in same column
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -463,6 +467,8 @@ class SudokuSolver{
 
 		int colStart=(col/3)*3;
 		int colEnd=(colStart+2);
+
+		int rowIter, colIter;
 
 		for(rowIter=rowStart; rowIter<=rowEnd; rowIter++){
 			for(colIter=colStart; colIter<=colEnd; colIter++){

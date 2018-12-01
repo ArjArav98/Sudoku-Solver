@@ -19,8 +19,6 @@ using namespace std;
 class SudokuFrame{
 	
 	int sudokuFrame[9][9]; //This pointer will hold all the values in the matrix.
-	int rowIter, colIter; //iterator variables
-	
 
 	/**	
 	  *	@desc This constructor calls the menu() func to provide the menu. It also
@@ -60,6 +58,8 @@ class SudokuFrame{
 	  *	@return none
 	*/
 	private:void setZeros(){
+		int rowIter, colIter;
+
 		for(rowIter=0; rowIter<9; rowIter++){
 			for(colIter=0; colIter<9; colIter++){
 				sudokuFrame[rowIter][colIter]=0;
@@ -96,6 +96,7 @@ class SudokuFrame{
 	*/
 	public:void clearFrameFrom(int row, int col){
 		int jcount=0;
+		int rowIter, colIter;
 
 		for(rowIter=row; rowIter<9; rowIter++){
 			
@@ -265,7 +266,6 @@ class Possibilities{
 */
 class SudokuSolver{
 	
-	int rowIter, colIter; //Iter variables
 	int recursiveCount; //Stats variable
 	SudokuFrame frame; //The frame object
 	
@@ -297,6 +297,7 @@ class SudokuSolver{
 	  *	@return (bool) whether the value is valid or not in the sudoku frame
 	*/
 	private:bool cellValueValid(int row, int col, int currentValue){
+		int rowIter, colIter;
 
 		//Checking if value exists in same column
 		for(rowIter=0; rowIter<9; rowIter++){
@@ -333,6 +334,8 @@ class SudokuSolver{
 
 		int colStart=(col/3)*3;
 		int colEnd=(colStart+2);
+		
+		int rowIter, colIter;
 
 		for(rowIter=rowStart; rowIter<=rowEnd; rowIter++){
 			for(colIter=colStart; colIter<=colEnd; colIter++){
