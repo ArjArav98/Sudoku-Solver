@@ -92,7 +92,6 @@ This is a program which validates solutions for 9x9 Sudoku puzzles. **Written co
         5 9 4  3 6 2  7 1 8
         ```
 
-* Once solved, the Sudoku puzzles shall be displayed like this.
 
 ### How It Works
 The workings of the Sudoku Validator are quite simple, to be honest. Here's a simple algorithm explaining them all.
