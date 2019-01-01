@@ -213,33 +213,34 @@ class SudokuFrame{
 	}
 
 	/**
-	  *	@desc Displays the values stored in the frame with designs.
+	  *	@desc Displays the values stored in the frame with designs. We also use
+	  *	ANSI colors, using escape sequences, to display the frame.
 	  *	@param none
 	  *	@return none
 	*/
 	public:void displayFrame(){
 
-		cout<<"++=====================================++";
+		cout<<"\033[0;36m++=====================================++";
 		int rowIter, colIter;
 
 		for(rowIter=0; rowIter<9; rowIter++){
 			int cellIter=1;
 
-			cout<<"\n||";
+			cout<<"\n\033[0;36m||";
 			for(colIter=0; colIter<9; colIter++){
 				if(cellIter==3){
-					cout<<" "<<sudokuFrame[rowIter][colIter]<<" ";
-					cout<<"||";
+					cout<<"\033[0m "<<sudokuFrame[rowIter][colIter]<<" ";
+					cout<<"\033[0;36m||";
 					cellIter=1;
 				}
 				else{
-					cout<<" "<<sudokuFrame[rowIter][colIter]<<"  ";
+					cout<<"\033[0m "<<sudokuFrame[rowIter][colIter]<<"  ";
 					cellIter++;	
 				}
 			}
 
-			if(rowIter%3!=2) cout<<"\n++-----------++-----------++-----------++";
-			else cout<<"\n++=====================================++";
+			if(rowIter%3!=2) cout<<"\n\033[0;36m++-----------++-----------++-----------++";
+			else cout<<"\n\033[0;36m++=====================================++";
 		}
 
 	}
