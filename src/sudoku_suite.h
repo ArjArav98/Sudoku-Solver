@@ -34,22 +34,20 @@ class PuzzleGrid {
         /* A function that lets us set the initial state of the puzzle.
          * '0' values represent empty cells and values between '1' and '9'
          * represent pre-filled values. Any other value results in error. */
-        auto invalid = std::any_of(
-            grid.begin(),
-            grid.end(),
-            [] (std::array<int, 9> grid_row) -> bool {
-                return std::any_of(
-                    grid_row.begin(),
-                    grid_row.end(),
-                    [] (int value) -> bool {
-                        return (value < 0 || value > 9);
-                    });
-            });
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                int cell_value = grid.at(row).at(col);
 
-        if (invalid) throw std::invalid_argument(
-            "Cell value should be in range 0 <= x <= 9");
+                if (cell_value < 0 || cell_value > 9) {
+                    throw std::invalid_argument(
+                        "Cell value should be in range 0 <= x <= 9");
+                }
 
-        this->grid = grid;
+                this->grid.at(row).at(col) = cell_value;
+                if (cell_value == 0) continue;
+                coords_that_were_pre_filled.insert(std::make_pair(row, col));
+            }
+        }
     }
 
     int get(std::pair<int, int> coord) {
@@ -105,6 +103,15 @@ class PuzzleGrid {
         return false;
     }
 
+    bool coord_was_pre_filled(std::pair<int, int> coord) {
+        auto element_found = std::find(
+            coords_that_were_pre_filled.begin(),
+            coords_that_were_pre_filled.end(),
+            coord);
+
+        return (element_found != coords_that_were_pre_filled.end());
+    }
+
     friend std::ostream& operator<< (std::ostream& out, PuzzleGrid grid);
 };
 
@@ -120,6 +127,12 @@ std::ostream& operator<< (std::ostream& out, PuzzleGrid grid) {
         if (row_index%3 == 2) out << "+-------+-------+-------+\n";
     }
     return out;
+}
+
+std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
+    if (coord.second == 8 && coord.first == 8) return coord;
+    else if (coord.second == 8) return std::make_pair(coord.first + 1, 0);
+    return std::make_pair(coord.first, coord.second + 1);
 }
 
 std::vector<int> get_possible_values_for_cell_at_coord(
@@ -144,5 +157,10 @@ std::vector<int> get_possible_values_for_cell_at_coord(
     return filtered_values;
 }
 
+//bool solved_for_cell_at_coord(
+//    PuzzleGrid &grid, std::pair<int, int> cell_coord
+//) {
+//    
+//}
 
 }  // namespace sudoku

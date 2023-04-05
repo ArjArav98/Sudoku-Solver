@@ -6,6 +6,31 @@
 
 #include"../src/sudoku_suite.h"
 
+void test_puzzle_initial_state_is_set_correctly() {
+    /* We check if the set_initial_state() function correctly
+     * adds the non-'0' value coordinates to the list of coords
+     * that were pre-filled. */
+    std::array<std::array<int, 9>, 9> grid = {{
+        {{ 0, 0, 3, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 1, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 7, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 0, 9 }},
+    }};
+
+    sudoku::PuzzleGrid puzzle(grid);
+
+    assert(puzzle.coord_was_pre_filled(std::make_pair(0,2)));
+    assert(puzzle.coord_was_pre_filled(std::make_pair(8,8)));
+    assert(puzzle.coord_was_pre_filled(std::make_pair(4,0)));
+    assert(puzzle.coord_was_pre_filled(std::make_pair(5,5)));
+    assert(puzzle.coord_was_pre_filled(std::make_pair(6,6)) == false);
+}
+
 void test_value_exists_in_column() {
     /* We check functionality of the value_exists_in_column function. */
     std::array<std::array<int, 9>, 9> grid = {{
@@ -107,12 +132,31 @@ void test_possible_cell_values_generated_correctly() {
     assert(obtained_value == expected_value);
 }
 
+void test_successive_cell_coords_are_generated_correctly() {
+    /* We test that the get_next_cell_coord() function correctly
+     * generates the next successive coord value for the sudoku grid. */
+
+    assert(
+        sudoku::get_next_cell_coord(std::make_pair(0, 0))
+        == std::make_pair(0, 1));
+
+    assert(
+        sudoku::get_next_cell_coord(std::make_pair(0, 8))
+        == std::make_pair(1, 0));
+
+    assert(
+        sudoku::get_next_cell_coord(std::make_pair(8, 8))
+        == std::make_pair(8, 8));
+}
+
 int main() {
     auto tests = std::vector<void(*)()>{
+        test_puzzle_initial_state_is_set_correctly,
         test_value_exists_in_column,
         test_value_exists_in_row,
         test_value_exists_in_3x3_grid,
-        test_possible_cell_values_generated_correctly
+        test_possible_cell_values_generated_correctly,
+        test_successive_cell_coords_are_generated_correctly
     };
 
     std::for_each(
