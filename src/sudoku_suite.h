@@ -1,4 +1,7 @@
 /* Copyright 2023 Arjun Aravind */
+#ifndef SRC_SUDOKU_SUITE_H_
+#define SRC_SUDOKU_SUITE_H_
+#endif  // SRC_SUDOKU_SUITE_H_
 
 #include<iostream>
 #include<fstream>
@@ -9,17 +12,10 @@
 #include<utility>
 #include<stdexcept>
 
+
 namespace sudoku {
-    class PuzzleGrid;
 
-    std::ostream& operator<< (std::ostream& out, PuzzleGrid grid);
-    std::vector<int> get_possible_values_for_cell_at_coord(
-        PuzzleGrid puzzle,
-        std::pair<int, int> coord
-    );
-}
-
-class sudoku::PuzzleGrid {
+class PuzzleGrid {
     private:
     std::array<std::array<int, 9>, 9> grid;
     std::set< std::pair<int, int> > coords_that_were_pre_filled;
@@ -30,30 +26,14 @@ class sudoku::PuzzleGrid {
         grid.fill(filled_array);
     }
 
-    void set(std::pair<int, int> coord, int value) {
-        /* set() variant that lets us set the puzzle one cell
-         * at a time.
-         * Note: A cell with a value '0' represents that it is
-         * currently empty. */
-        if (coord.first < 0 || coord.first > 8)
-            throw std::invalid_argument(
-                "Row coords should be within range 0 <= x <= 8");
-        if (coord.second < 0 || coord.second > 8)
-            throw std::invalid_argument(
-                "Column coords should be within range 0 <= x <= 8");
-        if (value < 0 || value > 9)
-            throw std::invalid_argument(
-                "Cell value should be in range 0 <= x <= 9");
-
-        coords_that_were_pre_filled.insert(coord);
-        grid[coord.first][coord.second] = value;
+    explicit PuzzleGrid(std::array<std::array<int, 9>, 9> grid) {
+        set_initial_state(grid);
     }
 
-    void set(std::array<std::array<int, 9>, 9> grid) {
-        /* set() variant that lets us set the puzzle by
-         * passing the entire 2D grid at once.
-         * Note: A cell with a value '0' represents that it is
-         * currently empty. */
+    void set_initial_state(std::array<std::array<int, 9>, 9> grid) {
+        /* A function that lets us set the initial state of the puzzle.
+         * '0' values represent empty cells and values between '1' and '9'
+         * represent pre-filled values. Any other value results in error. */
         auto invalid = std::any_of(
             grid.begin(),
             grid.end(),
@@ -128,7 +108,7 @@ class sudoku::PuzzleGrid {
     friend std::ostream& operator<< (std::ostream& out, PuzzleGrid grid);
 };
 
-std::ostream& sudoku::operator<< (std::ostream& out, PuzzleGrid grid) {
+std::ostream& operator<< (std::ostream& out, PuzzleGrid grid) {
     out << "+-------+-------+-------+\n";
     for (int row_index=0; row_index < 9; row_index++) {
         out << "|";
@@ -142,7 +122,7 @@ std::ostream& sudoku::operator<< (std::ostream& out, PuzzleGrid grid) {
     return out;
 }
 
-std::vector<int> sudoku::get_possible_values_for_cell_at_coord(
+std::vector<int> get_possible_values_for_cell_at_coord(
     PuzzleGrid puzzle,
     std::pair<int, int> coord
 ) {
@@ -163,3 +143,6 @@ std::vector<int> sudoku::get_possible_values_for_cell_at_coord(
     filtered_values.resize(std::distance(filtered_values.begin(), it));
     return filtered_values;
 }
+
+
+}  // namespace sudoku
