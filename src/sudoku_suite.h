@@ -136,7 +136,7 @@ std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
 }
 
 std::vector<int> get_possible_values_for_cell_at_coord(
-    PuzzleGrid puzzle,
+    PuzzleGrid *puzzle,
     std::pair<int, int> coord
 ) {
     std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -157,10 +157,18 @@ std::vector<int> get_possible_values_for_cell_at_coord(
     return filtered_values;
 }
 
-//bool solved_for_cell_at_coord(
-//    PuzzleGrid &grid, std::pair<int, int> cell_coord
-//) {
-//    
-//}
+bool solved_for_cell_at_coord(
+    PuzzleGrid *grid, std::pair<int, int> cell_coord
+) {
+    auto next_coord = get_next_cell_coord(cell_coord);
+
+    if (grid->coord_was_pre_filled(cell_coord))
+        return solved_for_cell_at_coord(next_coord);
+
+    auto possible_values = get_possible_values_for_cell_at_coord(cell_coord);
+    if (possible_values.size() == 0) return false;
+
+    for (int value = 0; value
+}
 
 }  // namespace sudoku
