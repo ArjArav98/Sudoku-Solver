@@ -8,13 +8,13 @@
 #include<utility>
 #include<stdexcept>
 
-class SudokuGrid {
+class SudokuPuzzle {
     private:
     std::array< std::array<int, 9> , 9> grid;
     std::set< std::pair<int, int> > coords_that_were_pre_filled;
 
     public:
-    SudokuGrid() {
+    SudokuPuzzle() {
         std::array<int, 9> filled_array = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         grid.fill(filled_array);
     }
@@ -34,7 +34,10 @@ class SudokuGrid {
         grid[coord.first][coord.second] = value;
     }
 
-    private:
+    int get(std::pair<int, int> coord) {
+        return grid.at(coord.first).at(coord.second);
+    }
+
     bool value_exists_in_column(int column_index, int value) {
         return std::any_of(
             grid.begin(),
@@ -62,7 +65,7 @@ class SudokuGrid {
 
             for (int row_iter=row_start; row_iter <= row_end; row_iter++) {
                 for (int col_iter = col_start; col_iter <= col_end; col_iter++) {
-                    if (grid.at(row_iter).at(col_iter) == currentValue)
+                    if (grid.at(row_iter).at(col_iter) == value)
                         return false;
                 }
             }
@@ -70,10 +73,10 @@ class SudokuGrid {
             return true;
     }
 
-    friend std::ostream& operator<< (std::ostream& out, SudokuGrid grid);
+    friend std::ostream& operator<< (std::ostream& out, SudokuPuzzle grid);
 };
 
-std::ostream& operator<< (std::ostream& out, SudokuGrid grid) {
+std::ostream& operator<< (std::ostream& out, SudokuPuzzle grid) {
     out << "+-------+-------+-------+\n";
     for (int row_index=0; row_index < 9; row_index++) {
         out << "|";
@@ -88,7 +91,7 @@ std::ostream& operator<< (std::ostream& out, SudokuGrid grid) {
 }
 
 int main() {
-    SudokuGrid grid;
+    SudokuPuzzle grid;
     grid.set(std::make_pair(0, 0), 3);
     grid.set(std::make_pair(8, 0), 7);
     std::cout << grid.value_exists_in_column(0, 7) << std::endl;
