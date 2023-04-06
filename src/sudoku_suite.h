@@ -15,18 +15,18 @@
 
 namespace sudoku {
 
-class PuzzleGrid {
+class Grid {
     private:
     std::array<std::array<int, 9>, 9> grid;
     std::set< std::pair<int, int> > coords_that_were_pre_filled;
 
     public:
-    PuzzleGrid() {
+    Grid() {
         std::array<int, 9> filled_array = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         grid.fill(filled_array);
     }
 
-    explicit PuzzleGrid(std::array<std::array<int, 9>, 9> grid) {
+    explicit Grid(std::array<std::array<int, 9>, 9> grid) {
         set_initial_state(grid);
     }
 
@@ -34,6 +34,8 @@ class PuzzleGrid {
         /* A function that lets us set the initial state of the puzzle.
          * '0' values represent empty cells and values between '1' and '9'
          * represent pre-filled values. Any other value results in error. */
+        coords_that_were_pre_filled.clear();
+
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 int cell_value = grid.at(row).at(col);
@@ -50,7 +52,13 @@ class PuzzleGrid {
         }
     }
 
-    int get(std::pair<int, int> coord) {
+    void set(std::pair<int, int> coord, int value) {
+        if (value < 0 || value > 9) throw std::invalid_argument(
+            "Cell value should be in range 0 <= x <= 9");
+        grid.at(coord.first).at(coord.second) = value;
+    }
+
+    int get(std::pair<int, int> coord) const {
         return grid.at(coord.first).at(coord.second);
     }
 
@@ -68,25 +76,25 @@ class PuzzleGrid {
         }
     }
 
-    bool value_exists_in_column(int column_index, int value) {
+    bool value_exists_in_column(std::pair<int, int> coord, int value) const {
         return std::any_of(
             grid.begin(),
             grid.end(),
             [=] (std::array<int, 9> grid_row) -> bool {
-                return grid_row.at(column_index) == value;
+                return grid_row.at(coord.second) == value;
             });
     }
 
-    bool value_exists_in_row(int row_index, int value) {
+    bool value_exists_in_row(std::pair<int, int> coord, int value) const {
         return std::any_of(
-            grid.at(row_index).begin(),
-            grid.at(row_index).end(),
+            grid.at(coord.first).begin(),
+            grid.at(coord.first).end(),
             [=] (int cell) -> bool {
                 return cell == value;
             });
     }
 
-    bool value_exists_in_3x3_grid(std::pair<int, int> coord, int value) {
+    bool value_exists_in_3x3_grid(std::pair<int, int> coord, int value) const {
         int row_start = (coord.first/3)*3;
         int row_end = (row_start+2);
 
@@ -103,7 +111,7 @@ class PuzzleGrid {
         return false;
     }
 
-    bool coord_was_pre_filled(std::pair<int, int> coord) {
+    bool coord_was_pre_filled(std::pair<int, int> coord) const {
         auto element_found = std::find(
             coords_that_were_pre_filled.begin(),
             coords_that_were_pre_filled.end(),
@@ -112,10 +120,20 @@ class PuzzleGrid {
         return (element_found != coords_that_were_pre_filled.end());
     }
 
-    friend std::ostream& operator<< (std::ostream& out, PuzzleGrid grid);
+    bool operator== (const Grid& grid) const {
+        for (int row = 0; row < 9; row++) {
+            for (int col = 0; col < 9; col++) {
+                auto coord = std::make_pair(row, col);
+                if (get(coord) != grid.get(coord)) return false;
+            }
+        }
+        return true;
+    }
+
+    friend std::ostream& operator<< (std::ostream& out, Grid grid);
 };
 
-std::ostream& operator<< (std::ostream& out, PuzzleGrid grid) {
+std::ostream& operator<< (std::ostream& out, Grid grid) {
     out << "+-------+-------+-------+\n";
     for (int row_index=0; row_index < 9; row_index++) {
         out << "|";
@@ -129,14 +147,18 @@ std::ostream& operator<< (std::ostream& out, PuzzleGrid grid) {
     return out;
 }
 
+/*------------------*/
+/* COORD FUNCTIONS  */
+/*------------------*/
+
 std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
     if (coord.second == 8 && coord.first == 8) return coord;
     else if (coord.second == 8) return std::make_pair(coord.first + 1, 0);
     return std::make_pair(coord.first, coord.second + 1);
 }
 
-std::vector<int> get_possible_values_for_cell_at_coord(
-    PuzzleGrid *puzzle,
+std::vector<int> get_values_for_cell_at_coord(
+    const Grid& grid,
     std::pair<int, int> coord
 ) {
     std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -145,11 +167,11 @@ std::vector<int> get_possible_values_for_cell_at_coord(
     auto it = std::copy_if(
         values.begin(), values.end(),
         filtered_values.begin(),
-        [&puzzle, coord] (int value) -> bool {
+        [&grid, coord] (int value) -> bool {
             return !(
-                puzzle.value_exists_in_row(coord.first, value) ||
-                puzzle.value_exists_in_column(coord.second, value) ||
-                puzzle.value_exists_in_3x3_grid(coord, value));
+                grid.value_exists_in_row(coord, value) ||
+                grid.value_exists_in_column(coord, value) ||
+                grid.value_exists_in_3x3_grid(coord, value));
         });
 
     // Shrink vector to remove empty elements.
@@ -157,18 +179,38 @@ std::vector<int> get_possible_values_for_cell_at_coord(
     return filtered_values;
 }
 
-bool solved_for_cell_at_coord(
-    PuzzleGrid *grid, std::pair<int, int> cell_coord
+/*-----------------*/
+/* SUITE FUNCTIONS */
+/*-----------------*/
+
+bool solve(
+    Grid *grid,
+    std::pair<int, int> cell_coord = std::make_pair(0, 0)
 ) {
     auto next_coord = get_next_cell_coord(cell_coord);
 
     if (grid->coord_was_pre_filled(cell_coord))
-        return solved_for_cell_at_coord(next_coord);
+        return solve(grid, next_coord);
 
-    auto possible_values = get_possible_values_for_cell_at_coord(cell_coord);
-    if (possible_values.size() == 0) return false;
+    auto values = get_values_for_cell_at_coord(*grid, cell_coord);
+    if (values.size() == 0) return false;
 
-    for (int value = 0; value
+    for (auto value = values.begin(); value != values.end(); value++) {
+        grid->set(cell_coord, *value);
+        if (cell_coord == std::make_pair(8, 8)) return true;  // Solved!
+
+        bool next_cell_is_solved = solve(grid, next_coord);
+        if (next_cell_is_solved) return true;
+
+        /* If this value didn't work, we need to clear the grid of all the
+         * values that have been filled as a result of this. */
+        grid->clear_values_starting_from_coord(cell_coord);
+    }
+
+    if (cell_coord == std::make_pair(0, 0)) throw std::logic_error(
+        "This puzzle doesn't have a solution!");
+
+    return false;
 }
 
 }  // namespace sudoku
