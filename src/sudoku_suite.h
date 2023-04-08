@@ -15,11 +15,13 @@
 
 namespace sudoku {
 
+typedef std::pair<int, int> Coord;
+
 class Grid {
     /* A data structure that holds the Sudoku puzzle. */
     private:
     std::array<std::array<int, 9>, 9> grid;
-    std::set< std::pair<int, int> > coords_that_were_pre_filled;
+    std::set<Coord> coords_that_were_pre_filled;
 
     public:
     Grid() {
@@ -84,17 +86,17 @@ class Grid {
         set_initial_state(grid);
     }
 
-    void update(std::pair<int, int> coord, int value) {
+    void update(Coord coord, int value) {
         if (value < 0 || value > 9) throw std::invalid_argument(
             "Cell value should be in range 0 <= x <= 9");
         grid.at(coord.first).at(coord.second) = value;
     }
 
-    int get(std::pair<int, int> coord) const {
+    int get(Coord coord) const {
         return grid.at(coord.first).at(coord.second);
     }
 
-    void clear_values_starting_from_coord(std::pair<int, int> coord) {
+    void clear_values_starting_from_coord(Coord coord) {
         for (int row = coord.first; row < 9; row++) {
             for (int col = coord.second; col < 9; col++) {
                 auto pos_in_pre_filled = std::find(
@@ -111,25 +113,35 @@ class Grid {
     /*----------*/
     /* Checkers */
 
-    bool value_exists_in_column(std::pair<int, int> coord, int value) const {
+    bool value_exists_elsewhere_in_column(Coord coord, int value) const {
+        int row_index = -1;
+
         return std::any_of(
             grid.begin(),
             grid.end(),
-            [=] (std::array<int, 9> grid_row) -> bool {
-                return grid_row.at(coord.second) == value;
+            [=, &row_index] (std::array<int, 9> grid_row) -> bool {
+                // The coord itself doesn't count.
+                bool row_diff_to_coord_row = (coord.first != ++row_index);
+                return
+                    (grid_row.at(coord.second) == value) &&
+                    row_diff_to_coord_row;
             });
     }
 
-    bool value_exists_in_row(std::pair<int, int> coord, int value) const {
+    bool value_exists_elsewhere_in_row(Coord coord, int value) const {
+        int col_index = -1;
+
         return std::any_of(
             grid.at(coord.first).begin(),
             grid.at(coord.first).end(),
-            [=] (int cell) -> bool {
-                return cell == value;
+            [=, &col_index] (int cell) -> bool {
+                // The coord itself doesn't count.
+                bool col_diff_to_coord_col = (coord.second != ++col_index);
+                return (cell == value) && col_diff_to_coord_col;
             });
     }
 
-    bool value_exists_in_3x3_grid(std::pair<int, int> coord, int value) const {
+    bool value_exists_elsewhere_in_3x3_grid(Coord coord, int value) const {
         int row_start = (coord.first/3)*3;
         int row_end = (row_start+2);
 
@@ -138,15 +150,18 @@ class Grid {
 
         for (int row_iter=row_start; row_iter <= row_end; row_iter++) {
             for (int col_iter = col_start; col_iter <= col_end; col_iter++) {
-                if (grid.at(row_iter).at(col_iter) == value)
-                    return true;
+                // The coord itself doesn't count.
+                bool coord_diff_to_given_coord =
+                    std::make_pair(row_iter, col_iter) != coord;
+                if (coord_diff_to_given_coord &&
+                    (grid.at(row_iter).at(col_iter) == value)) return true;
             }
         }
 
         return false;
     }
 
-    bool coord_was_pre_filled(std::pair<int, int> coord) const {
+    bool coord_was_pre_filled(Coord coord) const {
         auto element_found = std::find(
             coords_that_were_pre_filled.begin(),
             coords_that_were_pre_filled.end(),
@@ -189,7 +204,7 @@ std::ostream& operator<< (std::ostream& out, Grid grid) {
 /* COORD FUNCTIONS  */
 /*------------------*/
 
-std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
+Coord get_next_cell_coord(Coord coord) {
     /* Function which returns the next successive coordinate for a
      * Sudoku grid, given a current coordinate. */
     if (coord.second == 8 && coord.first == 8) return coord;
@@ -199,7 +214,7 @@ std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
 
 std::vector<int> get_possible_values_for_cell_at_coord(
     const Grid& grid,
-    std::pair<int, int> coord
+    Coord coord
 ) {
     std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     std::vector<int> filtered_values(values.size());
@@ -209,9 +224,9 @@ std::vector<int> get_possible_values_for_cell_at_coord(
         filtered_values.begin(),
         [&grid, coord] (int value) -> bool {
             return !(
-                grid.value_exists_in_row(coord, value) ||
-                grid.value_exists_in_column(coord, value) ||
-                grid.value_exists_in_3x3_grid(coord, value));
+                grid.value_exists_elsewhere_in_column(coord, value) ||
+                grid.value_exists_elsewhere_in_row(coord, value) ||
+                grid.value_exists_elsewhere_in_3x3_grid(coord, value));
         });
 
     // Shrink vector to remove empty elements.
@@ -225,7 +240,7 @@ std::vector<int> get_possible_values_for_cell_at_coord(
 
 bool solve(
     Grid *grid,
-    std::pair<int, int> cell_coord = std::make_pair(0, 0)
+    Coord cell_coord = std::make_pair(0, 0)
 ) {
     auto next_coord = get_next_cell_coord(cell_coord);
 

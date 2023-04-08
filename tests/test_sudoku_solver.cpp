@@ -111,11 +111,18 @@ void test_value_exists_in_column() {
         {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
     }});
 
-    assert(grid.value_exists_in_column(std::make_pair(0, 0),  7) == true);
-    assert(grid.value_exists_in_column(std::make_pair(1, 5),  1) == false);
-    assert(grid.value_exists_in_column(std::make_pair(2, 0),  2) == false);
-    assert(grid.value_exists_in_column(std::make_pair(3, 5),  3) == true);
-    assert(grid.value_exists_in_column(std::make_pair(4, 8),  1) == false);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(0, 0),  7)
+        == true);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(1, 5),  1)
+        == false);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(2, 0),  2)
+        == false);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(3, 5),  3)
+        == true);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(4, 8),  1)
+        == false);
+    assert(grid.value_exists_elsewhere_in_column(std::make_pair(7, 0),  7)
+        == false);  // The coord itself shouldn't be checked.
 }
 
 void test_value_exists_in_row() {
@@ -132,9 +139,14 @@ void test_value_exists_in_row() {
         {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
     }});
 
-    assert(grid.value_exists_in_row(std::make_pair(0, 0), 8) == true);
-    assert(grid.value_exists_in_row(std::make_pair(8, 0), 1) == false);
-    assert(grid.value_exists_in_row(std::make_pair(6, 0), 9) == true);
+    assert(grid.value_exists_elsewhere_in_row(std::make_pair(0, 0), 8)
+        == true);
+    assert(grid.value_exists_elsewhere_in_row(std::make_pair(6, 1), 9)
+        == true);
+    assert(grid.value_exists_elsewhere_in_row(std::make_pair(8, 0), 1)
+        == false);
+    assert(grid.value_exists_elsewhere_in_row(std::make_pair(1, 8), 9)
+        == false);  // The coord itself shouldn't be checked.
 }
 
 void test_value_exists_in_3x3_grid() {
@@ -151,12 +163,20 @@ void test_value_exists_in_3x3_grid() {
         {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
     }});
 
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(2, 2), 3) == true);
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(2, 2), 1) == false);
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(5, 4), 5) == true);
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(5, 5), 3) == false);
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(8, 8), 7) == false);
-    assert(grid.value_exists_in_3x3_grid(std::make_pair(6, 6), 7) == false);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(2, 2), 3)
+        == true);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(2, 2), 1)
+        == false);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(5, 4), 5)
+        == true);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(5, 5), 3)
+        == false);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(8, 8), 7)
+        == false);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(6, 6), 7)
+        == false);
+    assert(grid.value_exists_elsewhere_in_3x3_grid(std::make_pair(7, 0), 7)
+        == false);  // The coord itself shouldn't be checked.
 }
 
 void test_possible_cell_values_generated_correctly() {
