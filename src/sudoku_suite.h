@@ -12,6 +12,8 @@
 #include<algorithm>
 #include<utility>
 #include<stdexcept>
+#include<chrono>
+#include<random>
 
 namespace sudoku {
 
@@ -212,6 +214,24 @@ Coord get_next_cell_coord(Coord coord) {
     return std::make_pair(coord.first, coord.second + 1);
 }
 
+std::set<Coord> get_N_random_cell_coords(int n) {
+    std::random_device rd;  // obtain a random number from hardware
+    std::mt19937 gen(rd());  // seed the generator
+    std::uniform_int_distribution<> distr(0, 8);  // define the range
+
+    std::set<Coord> random_cell_coords;
+
+    while (n > 0) {
+        auto cell_coord = std::make_pair(distr(gen), distr(gen));
+        auto inserted = random_cell_coords.insert(cell_coord);
+
+        if (!inserted.second) continue;  // Element already existed.
+        n--;
+    }
+
+    return random_cell_coords;
+}
+
 std::vector<int> get_possible_values_for_cell_at_coord(
     const Grid& grid,
     Coord coord
@@ -234,6 +254,47 @@ std::vector<int> get_possible_values_for_cell_at_coord(
     return filtered_values;
 }
 
+/*----------------------*/
+/* GENERATION FUNCTIONS */
+/*----------------------*/
+
+
+bool fill_with_valid_solution(
+    Grid *grid,
+    Coord curr_coord = std::make_pair(0, 0)
+) {
+    auto next_coord = get_next_cell_coord(curr_coord);
+
+    auto values = get_possible_values_for_cell_at_coord(*grid, curr_coord);
+    if (values.size() == 0) return false;
+
+    // We randomise the values so that we get a random solution each time.
+    auto rnd_seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::shuffle(
+        values.begin(),
+        values.end(),
+        std::default_random_engine(rnd_seed));
+
+    for (auto value : values) {
+        grid->update(curr_coord, value);
+        if (curr_coord == std::make_pair(8, 8)) return true;  // Done
+
+        bool next_cell_is_filled = fill_with_valid_solution(grid, next_coord);
+        if (next_cell_is_filled) return true;
+
+        /* If this value didn't work, we need to clear the grid of all the
+         * values that have been filled as a result of this. */
+        grid->clear_values_starting_from_coord(curr_coord);
+    }
+
+    return false;
+}
+
+void remove_values_from_solution(Grid *grid, int values_to_remove) {
+    auto random_cell_coords = get_N_random_cell_coords(values_to_remove);
+    for (auto coord : random_cell_coords) grid->update(coord, 0);
+}
+
 /*-----------------*/
 /* SUITE FUNCTIONS */
 /*-----------------*/
@@ -250,8 +311,8 @@ bool solve(
     auto values = get_possible_values_for_cell_at_coord(*grid, cell_coord);
     if (values.size() == 0) return false;
 
-    for (auto value = values.begin(); value != values.end(); value++) {
-        grid->update(cell_coord, *value);
+    for (auto value : values) {
+        grid->update(cell_coord, value);
         if (cell_coord == std::make_pair(8, 8)) return true;  // Solved!
 
         bool next_cell_is_solved = solve(grid, next_coord);
@@ -282,6 +343,13 @@ bool is_valid_solution(
     if (curr_coord == std::make_pair(8, 8)) return true;
     else
         return is_valid_solution(grid, get_next_cell_coord(curr_coord));
+}
+
+Grid generate_puzzle() {
+    Grid grid;
+    fill_with_valid_solution(&grid);
+    remove_values_from_solution(&grid, 30);
+    return grid;
 }
 
 }  // namespace sudoku
