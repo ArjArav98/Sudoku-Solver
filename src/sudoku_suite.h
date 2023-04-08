@@ -334,7 +334,7 @@ bool is_valid_solution(
     Coord curr_coord = std::make_pair(0, 0)
 ) {
     int value = grid.get(curr_coord);
-    if (value == 0) return false;
+    if (value == 0) return false;  // It's unfinished.
     else if (
         grid.value_exists_elsewhere_in_column(curr_coord, value) ||
         grid.value_exists_elsewhere_in_row(curr_coord, value) ||
