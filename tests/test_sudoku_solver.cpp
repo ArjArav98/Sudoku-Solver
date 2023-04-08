@@ -29,6 +29,74 @@ void test_puzzle_initial_state_is_set_correctly() {
     assert(grid.coord_was_pre_filled(std::make_pair(6, 6)) == false);
 }
 
+void test_puzzle_initial_state_is_set_correctly_from_file() {
+    /* We check if the set_initial_state_from_file() function correctly
+     * loads the values from a file and sets the initial state. */
+
+    sudoku::Grid grid_from_file;
+    grid_from_file.set_initial_state_from_file("tests/test_data_1.txt");
+
+    sudoku::Grid expected_output({{
+        {{ 0, 0, 0, 0, 0, 0, 6, 8, 0 }},
+        {{ 0, 0, 0, 0, 7, 3, 0, 0, 9 }},
+        {{ 3, 0, 9, 0, 0, 0, 0, 4, 5 }},
+        {{ 4, 9, 0, 0, 0, 0, 0, 0, 0 }},
+        {{ 8, 0, 3, 0, 5, 0, 9, 0, 2 }},
+        {{ 0, 0, 0, 0, 0, 0, 0, 3, 6 }},
+        {{ 9, 6, 0, 0, 0, 0, 3, 0, 8 }},
+        {{ 7, 0, 0, 6, 8, 0, 0, 0, 0 }},
+        {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
+    }});
+
+    assert(grid_from_file == expected_output);
+}
+
+void test_puzzle_initial_state_isnt_set_due_to_incorrect_values() {
+    /* We check if the set_initial_state_from_file() function errors out
+     * when the values in the file are incorrect. */
+
+    bool exception_not_thrown = true;
+    sudoku::Grid grid_from_file;
+
+    /*----------*/
+    /* This file contains values which are >9. It should error out. */
+    /*----------*/
+
+    try {
+        grid_from_file.set_initial_state_from_file("tests/test_data_2.txt");
+    } catch (std::invalid_argument ia) {
+        exception_not_thrown = false;
+    }
+
+    if (exception_not_thrown) assert(false);
+
+    /*----------*/
+    /* This file contains too many values. It should error out. */
+    /*----------*/
+    exception_not_thrown = true;
+
+    try {
+        grid_from_file.set_initial_state_from_file("tests/test_data_3.txt");
+    } catch (std::invalid_argument ia) {
+        exception_not_thrown = false;
+    }
+
+    if (exception_not_thrown) assert(false);
+
+    /*----------*/
+    /* This file contains too little values. It should error out. */
+    /*----------*/
+    exception_not_thrown = true;
+
+    try {
+        grid_from_file.set_initial_state_from_file("tests/test_data_4.txt");
+    } catch (std::invalid_argument ia) {
+        exception_not_thrown = false;
+    }
+
+    if (exception_not_thrown) assert(false);
+}
+
 void test_value_exists_in_column() {
     /* We check functionality of the value_exists_in_column function. */
     sudoku::Grid grid({{
@@ -92,7 +160,7 @@ void test_value_exists_in_3x3_grid() {
 }
 
 void test_possible_cell_values_generated_correctly() {
-    /* We check if the get_values_for_cell_at_coord()
+    /* We check if the get_possible_values_for_cell_at_coord()
      * function generates the possible values for each cell correctly. */
     sudoku::Grid puzzle({{
         {{ 0, 0, 0, 0, 0, 0, 6, 8, 0 }},
@@ -106,17 +174,17 @@ void test_possible_cell_values_generated_correctly() {
         {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
     }});
 
-    auto obtained_value = sudoku::get_values_for_cell_at_coord(
+    auto obtained_value = sudoku::get_possible_values_for_cell_at_coord(
         puzzle, std::make_pair(0, 0));
     auto expected_value = std::vector<int>{ 1, 2, 5 };
     assert(obtained_value == expected_value);
 
-    obtained_value = sudoku::get_values_for_cell_at_coord(
+    obtained_value = sudoku::get_possible_values_for_cell_at_coord(
         puzzle, std::make_pair(5, 6));
     expected_value = std::vector<int>{ 1, 4, 5, 7, 8 };
     assert(obtained_value == expected_value);
 
-    obtained_value = sudoku::get_values_for_cell_at_coord(
+    obtained_value = sudoku::get_possible_values_for_cell_at_coord(
         puzzle, std::make_pair(8, 8));
     expected_value = std::vector<int>{ 1, 4, 7 };
     assert(obtained_value == expected_value);
@@ -202,6 +270,8 @@ void test_puzzle_is_solved_correctly() {
 int main() {
     auto tests = std::vector<void(*)()>{
         test_puzzle_initial_state_is_set_correctly,
+        test_puzzle_initial_state_is_set_correctly_from_file,
+        test_puzzle_initial_state_isnt_set_due_to_incorrect_values,
         test_value_exists_in_column,
         test_value_exists_in_row,
         test_value_exists_in_3x3_grid,

@@ -7,15 +7,16 @@
 #include<fstream>
 #include<array>
 #include<set>
+#include<string>
 #include<vector>
 #include<algorithm>
 #include<utility>
 #include<stdexcept>
 
-
 namespace sudoku {
 
 class Grid {
+    /* A data structure that holds the Sudoku puzzle. */
     private:
     std::array<std::array<int, 9>, 9> grid;
     std::set< std::pair<int, int> > coords_that_were_pre_filled;
@@ -29,6 +30,9 @@ class Grid {
     explicit Grid(std::array<std::array<int, 9>, 9> grid) {
         set_initial_state(grid);
     }
+
+    /*---------------------*/
+    /* Setters and Getters */
 
     void set_initial_state(std::array<std::array<int, 9>, 9> grid) {
         /* A function that lets us set the initial state of the puzzle.
@@ -52,7 +56,35 @@ class Grid {
         }
     }
 
-    void set(std::pair<int, int> coord, int value) {
+    void set_initial_state_from_file(std::string filename) {
+        /* A wrapper around the set_initial_state() function
+         * so that we can set the initial state from a file.
+         *
+         * The set_initial_state() function contains useful logic
+         * relating to the input which we are reusing. */
+        std::ifstream file;
+        file.open(filename, std::ios::in);
+
+        std::array<std::array<int, 9>, 9> grid;
+
+        for (int row_index = 0; row_index < 9; row_index++) {
+            for (int col_index = 0; col_index < 9; col_index++) {
+                file >> grid.at(row_index).at(col_index);
+                if (file.eof()) throw std::invalid_argument(
+                    "Too little values provided. Please supply 81 values.");
+            }
+        }
+
+        int value;
+        file >> value;
+        if (!file.eof()) throw std::invalid_argument(
+            "Too many values provided. Please supply only 81 values.");
+
+        file.close();
+        set_initial_state(grid);
+    }
+
+    void update(std::pair<int, int> coord, int value) {
         if (value < 0 || value > 9) throw std::invalid_argument(
             "Cell value should be in range 0 <= x <= 9");
         grid.at(coord.first).at(coord.second) = value;
@@ -75,6 +107,9 @@ class Grid {
             }
         }
     }
+
+    /*----------*/
+    /* Checkers */
 
     bool value_exists_in_column(std::pair<int, int> coord, int value) const {
         return std::any_of(
@@ -120,6 +155,9 @@ class Grid {
         return (element_found != coords_that_were_pre_filled.end());
     }
 
+    /*--------------------*/
+    /* Operator Overloads */
+
     bool operator== (const Grid& grid) const {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
@@ -152,12 +190,14 @@ std::ostream& operator<< (std::ostream& out, Grid grid) {
 /*------------------*/
 
 std::pair<int, int> get_next_cell_coord(std::pair<int, int> coord) {
+    /* Function which returns the next successive coordinate for a
+     * Sudoku grid, given a current coordinate. */
     if (coord.second == 8 && coord.first == 8) return coord;
     else if (coord.second == 8) return std::make_pair(coord.first + 1, 0);
     return std::make_pair(coord.first, coord.second + 1);
 }
 
-std::vector<int> get_values_for_cell_at_coord(
+std::vector<int> get_possible_values_for_cell_at_coord(
     const Grid& grid,
     std::pair<int, int> coord
 ) {
@@ -192,11 +232,11 @@ bool solve(
     if (grid->coord_was_pre_filled(cell_coord))
         return solve(grid, next_coord);
 
-    auto values = get_values_for_cell_at_coord(*grid, cell_coord);
+    auto values = get_possible_values_for_cell_at_coord(*grid, cell_coord);
     if (values.size() == 0) return false;
 
     for (auto value = values.begin(); value != values.end(); value++) {
-        grid->set(cell_coord, *value);
+        grid->update(cell_coord, *value);
         if (cell_coord == std::make_pair(8, 8)) return true;  // Solved!
 
         bool next_cell_is_solved = solve(grid, next_coord);
