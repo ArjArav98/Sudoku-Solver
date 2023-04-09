@@ -18,6 +18,8 @@ A C++17-compatible header that provides useful functions which help with the sol
 
 * Simply download the `src/sudoku_suite.h` file and move it to your project's directory.
 * Include the header file, as shown below in the examples, and use the functions you need!
+* **NOTE:** The code is incompatible with pre-C++17 versions. While compiling, you'll have to compile with the `--std=c++17` flag.
+    * For example; when using the clang compiler, the compile command would be `c++ --std=c++17 /path/to/file.cpp`
 
 ## Documentation
 
@@ -34,6 +36,8 @@ There are **three functions** that Sudoku-Suite provides the developer, along wi
     *  A function that takes in nothing and returns a `Grid` object containing an unfinished Sudoku puzzle.
 
 ## Examples
+
+**NOTE:** The following examples are also present in the repository in the `samples/` directory.
 
 * [Solving and validating a Sudoku puzzle](#solving-and-validating-sudoku-puzzle)
 * [Generating a Sudoku puzzle](#generating-a-sudoku-puzzle)
