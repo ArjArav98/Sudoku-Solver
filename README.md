@@ -27,9 +27,11 @@ There are **three functions** that Sudoku-Suite provides the developer, along wi
 
 * `Grid`
     *  An object that represents a 9x9 Sudoku grid. The `Grid` object does not validate the grid in any way, i.e, it only holds the grid and values inside it.
+    * While initialising, if the given values are invalid, an `std::invalid_argument` exception is thrown.
     * *Check out the examples below to see how we can initialise and use this object!*
 * `void solve(Grid *grid)`
     *  A function that takes in a pointer to a `Grid` object and solves the Sudoku puzzle present in it. Returns nothing.
+    * If the puzzle cannot be solved, a `std::logic_error` exception is thrown.
 * `bool is_valid_solution(Grid &grid)`
     *  A function that takes in a `Grid` object and returns a `bool` with a value of `true` if the `Grid` object contains a finished and valid Sudoku solution. 
 * `Grid generate_puzzle()`
