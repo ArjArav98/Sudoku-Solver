@@ -19,6 +19,8 @@ namespace sudoku {
 
 typedef std::pair<int, int> Coord;
 
+int GRID_LEN = 9;
+
 class Grid {
     /* A data structure that holds the Sudoku puzzle. */
     private:
@@ -44,8 +46,8 @@ class Grid {
          * represent pre-filled values. Any other value results in error. */
         coords_that_were_pre_filled.clear();
 
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
+        for (int row = 0; row < GRID_LEN; row++) {
+            for (int col = 0; col < GRID_LEN; col++) {
                 int cell_value = grid.at(row).at(col);
 
                 if (cell_value < 0 || cell_value > 9) {
@@ -71,8 +73,8 @@ class Grid {
 
         std::array<std::array<int, 9>, 9> grid;
 
-        for (int row_index = 0; row_index < 9; row_index++) {
-            for (int col_index = 0; col_index < 9; col_index++) {
+        for (int row_index = 0; row_index < GRID_LEN; row_index++) {
+            for (int col_index = 0; col_index < GRID_LEN; col_index++) {
                 file >> grid.at(row_index).at(col_index);
                 if (file.eof()) throw std::invalid_argument(
                     "Too little values provided. Please supply 81 values.");
@@ -99,8 +101,8 @@ class Grid {
     }
 
     void clear_values_starting_from_coord(Coord coord) {
-        for (int row = coord.first; row < 9; row++) {
-            for (int col = coord.second; col < 9; col++) {
+        for (int row = coord.first; row < GRID_LEN; row++) {
+            for (int col = coord.second; col < GRID_LEN; col++) {
                 auto pos_in_pre_filled = std::find(
                     coords_that_were_pre_filled.begin(),
                     coords_that_were_pre_filled.end(),
@@ -176,8 +178,8 @@ class Grid {
     /* Operator Overloads */
 
     bool operator== (const Grid& grid) const {
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
+        for (int row = 0; row < GRID_LEN; row++) {
+            for (int col = 0; col < GRID_LEN; col++) {
                 auto coord = std::make_pair(row, col);
                 if (get(coord) != grid.get(coord)) return false;
             }
@@ -190,9 +192,9 @@ class Grid {
 
 std::ostream& operator<< (std::ostream& out, Grid grid) {
     out << "+-------+-------+-------+\n";
-    for (int row_index=0; row_index < 9; row_index++) {
+    for (int row_index=0; row_index < GRID_LEN; row_index++) {
         out << "|";
-        for (int col_index=0; col_index < 9; col_index++) {
+        for (int col_index=0; col_index < GRID_LEN; col_index++) {
             out << " " << grid.grid[row_index][col_index];
             if (col_index%3 == 2) out << " |";
         }
@@ -209,15 +211,15 @@ std::ostream& operator<< (std::ostream& out, Grid grid) {
 Coord get_next_cell_coord(Coord coord) {
     /* Function which returns the next successive coordinate for a
      * Sudoku grid, given a current coordinate. */
-    if (coord.second == 8 && coord.first == 8) return coord;
-    else if (coord.second == 8) return std::make_pair(coord.first + 1, 0);
+    if (coord.second == GRID_LEN-1 && coord.first == GRID_LEN-1) return coord;
+    else if (coord.second == GRID_LEN-1) return std::make_pair(coord.first+1, 0);
     return std::make_pair(coord.first, coord.second + 1);
 }
 
 std::set<Coord> get_N_random_cell_coords(int n) {
     std::random_device rd;  // obtain a random number from hardware
     std::mt19937 gen(rd());  // seed the generator
-    std::uniform_int_distribution<> distr(0, 8);  // define the range
+    std::uniform_int_distribution<> distr(0, GRID_LEN-1);  // define the range
 
     std::set<Coord> random_cell_coords;
 
