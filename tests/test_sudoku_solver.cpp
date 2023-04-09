@@ -97,6 +97,22 @@ void test_puzzle_initial_state_isnt_set_due_to_incorrect_values() {
     if (exception_not_thrown) assert(false);
 }
 
+void test_exception_is_thrown_if_file_doesnt_exist() {
+    /* We check if the set_initial_state_from_file() function
+     * throws an std::invalid_argument exception if the file doesn't exist. */
+
+    bool exception_not_thrown = true;
+    sudoku::Grid grid_from_file;
+
+    try {
+        grid_from_file.set_initial_state_from_file("some_random_thing.txt");
+    } catch (std::invalid_argument ia) {
+        exception_not_thrown = false;
+    }
+
+    if (exception_not_thrown) assert(false);
+}
+
 void test_value_exists_in_column() {
     /* We check functionality of the value_exists_in_column function. */
     sudoku::Grid grid({{
@@ -354,6 +370,7 @@ int main() {
         test_puzzle_initial_state_is_set_correctly,
         test_puzzle_initial_state_is_set_correctly_from_file,
         test_puzzle_initial_state_isnt_set_due_to_incorrect_values,
+        test_exception_is_thrown_if_file_doesnt_exist,
         test_value_exists_in_column,
         test_value_exists_in_row,
         test_value_exists_in_3x3_grid,
