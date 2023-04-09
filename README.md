@@ -11,6 +11,7 @@ A C++17-compatible header that provides useful functions which help with the sol
     * [Reading Sudoku puzzles from a file](#reading-sudoku-puzzles-from-a-file)
     * [Operations on Grid objects](#operations-on-grid-objects)
 * [How It Works](#sudoku-solver---how-it-works)
+* [Running Tests](#running-tests)
 * [Acknowledgements](#acknowledgements)
 * [Tools](#tools)
 
@@ -230,6 +231,9 @@ This particular algorithm employs the use of backtracking, one of the more commo
 6. We stop when we reach the 81st cell (the last cell in a Sudoku puzzle) and have placed a valid value.
 7. The puzzle has now been solved.
 8. Stop.
+
+## Running Tests
+* To run the tests, enter `c++ --std=c++17 tests/test_sudoku_suite.cpp` and then run the executable produced.
 
 ## Acknowledgements
 
