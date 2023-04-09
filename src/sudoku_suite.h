@@ -70,6 +70,8 @@ class Grid {
          * relating to the input which we are reusing. */
         std::ifstream file;
         file.open(filename, std::ios::in);
+        if (file.fail()) throw std::invalid_argument(
+            "The file couldn't be opened. Please check if the file exists.");
 
         std::array<std::array<int, 9>, 9> grid;
 
@@ -211,8 +213,10 @@ std::ostream& operator<< (std::ostream& out, Grid grid) {
 Coord get_next_cell_coord(Coord coord) {
     /* Function which returns the next successive coordinate for a
      * Sudoku grid, given a current coordinate. */
-    if (coord.second == GRID_LEN-1 && coord.first == GRID_LEN-1) return coord;
-    else if (coord.second == GRID_LEN-1) return std::make_pair(coord.first+1, 0);
+    if (coord.second == GRID_LEN-1 && coord.first == GRID_LEN-1)
+        return coord;
+    else if (coord.second == GRID_LEN-1)
+        return std::make_pair(coord.first+1, 0);
     return std::make_pair(coord.first, coord.second + 1);
 }
 
@@ -298,17 +302,19 @@ void remove_values_from_solution(Grid *grid, int values_to_remove) {
 }
 
 /*-----------------*/
-/* SUITE FUNCTIONS */
+/* SOLVE FUNCTIONS */
 /*-----------------*/
 
-bool solve(
+bool _solve(
     Grid *grid,
     Coord cell_coord = std::make_pair(0, 0)
 ) {
     auto next_coord = get_next_cell_coord(cell_coord);
 
-    if (grid->coord_was_pre_filled(cell_coord))
-        return solve(grid, next_coord);
+    if (grid->coord_was_pre_filled(cell_coord)) {
+        if (cell_coord == std::make_pair(8, 8)) return true;
+        return _solve(grid, next_coord);
+    }
 
     auto values = get_possible_values_for_cell_at_coord(*grid, cell_coord);
     if (values.size() == 0) return false;
@@ -317,7 +323,7 @@ bool solve(
         grid->update(cell_coord, value);
         if (cell_coord == std::make_pair(8, 8)) return true;  // Solved!
 
-        bool next_cell_is_solved = solve(grid, next_coord);
+        bool next_cell_is_solved = _solve(grid, next_coord);
         if (next_cell_is_solved) return true;
 
         /* If this value didn't work, we need to clear the grid of all the
@@ -329,6 +335,14 @@ bool solve(
         "This puzzle doesn't have a solution!");
 
     return false;
+}
+
+/*-----------------*/
+/* SUITE FUNCTIONS */
+/*-----------------*/
+
+void solve(Grid *grid) {
+    _solve(grid);
 }
 
 bool is_valid_solution(
