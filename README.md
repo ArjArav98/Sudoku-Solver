@@ -18,7 +18,7 @@ A C++17-compatible header that provides useful functions which help with the sol
 ## Usage 
 
 * Simply download the `src/sudoku_suite.h` file and move it to your project's directory.
-* Include the header file, as shown below in the examples, and use the functions you need!
+* Include the required header files, as shown below in the examples, and use the functions you need!
 * **NOTE:** The code is incompatible with pre-C++17 versions. While compiling, you'll have to compile with the `--std=c++17` flag.
     * For example; when using the clang compiler, the compile command would be `c++ --std=c++17 /path/to/file.cpp`
 
@@ -40,7 +40,7 @@ There are **three functions** that Sudoku-Suite provides the developer, along wi
 
 ## Examples
 
-**NOTE:** The following examples are also present in the repository in the `samples/` directory.
+**NOTE:** The following examples are also present in the repository in the `examples/` directory.
 
 * [Solving and validating a Sudoku puzzle](#solving-and-validating-sudoku-puzzle)
 * [Generating a Sudoku puzzle](#generating-a-sudoku-puzzle)
@@ -51,7 +51,8 @@ There are **three functions** that Sudoku-Suite provides the developer, along wi
 #### Solving and validating Sudoku puzzle
 ```
 #include<iostream>
-#include"/path/to/sudoku_suite.h"
+#include"/path/to/src/sudoku_solver.h"
+#include"/path/to/src/sudoku_validator.h"
 
 int main() {
     sudoku::Grid grid({{
@@ -80,7 +81,7 @@ int main() {
 #### Generating a Sudoku puzzle 
 ```
 #include<iostream>
-#include"/path/to/sudoku_suite.h"
+#include"/path/to/src/sudoku_generator.h"
 
 int main() {
     sudoku::Grid grid = sudoku::generate_puzzle();
@@ -93,7 +94,10 @@ int main() {
 #### Initialising and reusing Grid objects 
 ```
 #include<iostream>
-#include"/path/to/sudoku_suite.h"
+#include"/path/to/src/grid.h"
+
+/* NOTE: If you only need to utilise the Grid object,
+ * you can just import the "grid.h" header alone. */
 
 int main() {
     //================
@@ -162,7 +166,10 @@ File: `sample1.txt`
 
 ```
 #include<iostream>
-#include"/path/to/sudoku_suite.h"
+#include"/path/to/src/grid.h"
+
+/* NOTE: If you only need to utilise the Grid object,
+ * you can just import the "grid.h" header alone. */
 
 int main() {
     sudoku::Grid grid;
@@ -179,7 +186,10 @@ int main() {
 #### Operations on Grid objects 
 ```
 #include<iostream>
-#include"/path/to/sudoku_suite.h"
+#include"/path/to/src/grid.h"
+
+/* NOTE: If you only need to utilise the Grid object,
+ * you can just import the "grid.h" header alone. */
 
 int main() {
 

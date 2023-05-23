@@ -1,7 +1,11 @@
-/* A basic example. */
+/* Copyright 2023 Arjun Aravind */
+/* A basic example as seen in the project's README. */
 
 #include<iostream>
-#include"../src/sudoku_suite.h"
+#include"../src/grid.h"
+
+/* NOTE: If you only need to utilise the Grid object,
+ * you can just import the "grid.h" header alone. */
 
 int main() {
     // Method 1: Use the constructor and pass in a
@@ -18,7 +22,7 @@ int main() {
         {{ 0, 2, 8, 0, 0, 0, 0, 0, 0 }}
     }});
     std::cout << grid << std::endl;
-    
+
     // Method 2: Declare a 2D array and pass it
     // into the set_initial_state() method.
 
@@ -38,7 +42,7 @@ int main() {
 
     // Method 3: Read the initial state of the puzzle
     // from a file.
-    
+
     grid.set_initial_state_from_file("samples/sample1.txt");
     std::cout << grid << std::endl;
 

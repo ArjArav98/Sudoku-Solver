@@ -1,10 +1,13 @@
-/* A basic example. */
+/* Copyright 2023 Arjun Aravind */
+/* A basic example as seen in the project's README. */
 
 #include<iostream>
-#include"../src/sudoku_suite.h"
+#include"../src/grid.h"
+
+/* NOTE: If you only need to utilise the Grid object,
+ * you can just import the "grid.h" header alone. */
 
 int main() {
-
     sudoku::Grid sample_grid_1({{
         {{ 1, 7, 2, 5, 4, 9, 6, 8, 3 }},
         {{ 6, 4, 5, 8, 7, 3, 2, 1, 9 }},
@@ -16,7 +19,7 @@ int main() {
         {{ 7, 3, 1, 6, 8, 2, 5, 9, 4 }},
         {{ 5, 2, 8, 9, 3, 4, 1, 6, 7 }}
     }});
-    
+
     sudoku::Grid sample_grid_2({{
         {{ 1, 7, 2, 5, 4, 9, 6, 8, 3 }},
         {{ 6, 4, 5, 8, 7, 3, 2, 1, 9 }},
