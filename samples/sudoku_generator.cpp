@@ -1,7 +1,8 @@
+/* Copyright 2023 Arjun Aravind */
 /* A basic example. */
 
 #include<iostream>
-#include"../src/sudoku_suite.h"
+#include"../src/sudoku_generator.h"
 
 int main() {
     sudoku::Grid grid = sudoku::generate_puzzle();
