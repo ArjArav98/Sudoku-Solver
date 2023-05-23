@@ -1,25 +1,18 @@
 /* Copyright 2023 Arjun Aravind */
-#ifndef SRC_SUDOKU_SUITE_H_
-#define SRC_SUDOKU_SUITE_H_
-#endif  // SRC_SUDOKU_SUITE_H_
+#ifndef SRC_GRID_H_
+#define SRC_GRID_H_
 
-#include<iostream>
-#include<fstream>
 #include<array>
+#include<fstream>
+#include<iostream>
 #include<set>
-#include<string>
-#include<vector>
-#include<algorithm>
-#include<utility>
 #include<stdexcept>
-#include<chrono>
-#include<random>
+#include<string>
+#include<utility>
+
+#include"../src/coord.h"
 
 namespace sudoku {
-
-typedef std::pair<int, int> Coord;
-
-int GRID_LEN = 9;
 
 class Grid {
     /* A data structure that holds the Sudoku puzzle. */
@@ -176,6 +169,28 @@ class Grid {
         return (element_found != coords_that_were_pre_filled.end());
     }
 
+    /*------------------------*/
+    /* Cell-related Functions */
+   
+    std::vector<int> get_possible_values_for_cell_at_coord(Coord coord) {
+        std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        std::vector<int> filtered_values(values.size());
+
+        auto it = std::copy_if(
+            values.begin(), values.end(),
+            filtered_values.begin(),
+            [this, coord] (int value) -> bool {
+                return !(
+                    this->value_exists_elsewhere_in_column(coord, value) ||
+                    this->value_exists_elsewhere_in_row(coord, value) ||
+                    this->value_exists_elsewhere_in_3x3_grid(coord, value));
+            });
+
+        // Shrink vector to remove empty elements.
+        filtered_values.resize(std::distance(filtered_values.begin(), it));
+        return filtered_values;
+    }    
+
     /*--------------------*/
     /* Operator Overloads */
 
@@ -206,166 +221,6 @@ std::ostream& operator<< (std::ostream& out, Grid grid) {
     return out;
 }
 
-/*------------------*/
-/* COORD FUNCTIONS  */
-/*------------------*/
-
-Coord get_next_cell_coord(Coord coord) {
-    /* Function which returns the next successive coordinate for a
-     * Sudoku grid, given a current coordinate. */
-    if (coord.second == GRID_LEN-1 && coord.first == GRID_LEN-1)
-        return coord;
-    else if (coord.second == GRID_LEN-1)
-        return std::make_pair(coord.first+1, 0);
-    return std::make_pair(coord.first, coord.second + 1);
-}
-
-std::set<Coord> get_N_random_cell_coords(int n) {
-    std::random_device rd;  // obtain a random number from hardware
-    std::mt19937 gen(rd());  // seed the generator
-    std::uniform_int_distribution<> distr(0, GRID_LEN-1);  // define the range
-
-    std::set<Coord> random_cell_coords;
-
-    while (n > 0) {
-        auto cell_coord = std::make_pair(distr(gen), distr(gen));
-        auto inserted = random_cell_coords.insert(cell_coord);
-
-        if (!inserted.second) continue;  // Element already existed.
-        n--;
-    }
-
-    return random_cell_coords;
-}
-
-std::vector<int> get_possible_values_for_cell_at_coord(
-    const Grid& grid,
-    Coord coord
-) {
-    std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    std::vector<int> filtered_values(values.size());
-
-    auto it = std::copy_if(
-        values.begin(), values.end(),
-        filtered_values.begin(),
-        [&grid, coord] (int value) -> bool {
-            return !(
-                grid.value_exists_elsewhere_in_column(coord, value) ||
-                grid.value_exists_elsewhere_in_row(coord, value) ||
-                grid.value_exists_elsewhere_in_3x3_grid(coord, value));
-        });
-
-    // Shrink vector to remove empty elements.
-    filtered_values.resize(std::distance(filtered_values.begin(), it));
-    return filtered_values;
-}
-
-/*----------------------*/
-/* GENERATION FUNCTIONS */
-/*----------------------*/
-
-
-bool fill_with_valid_solution(
-    Grid *grid,
-    Coord curr_coord = std::make_pair(0, 0)
-) {
-    auto next_coord = get_next_cell_coord(curr_coord);
-
-    auto values = get_possible_values_for_cell_at_coord(*grid, curr_coord);
-    if (values.size() == 0) return false;
-
-    // We randomise the values so that we get a random solution each time.
-    auto rnd_seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::shuffle(
-        values.begin(),
-        values.end(),
-        std::default_random_engine(rnd_seed));
-
-    for (auto value : values) {
-        grid->update(curr_coord, value);
-        if (curr_coord == std::make_pair(8, 8)) return true;  // Done
-
-        bool next_cell_is_filled = fill_with_valid_solution(grid, next_coord);
-        if (next_cell_is_filled) return true;
-
-        /* If this value didn't work, we need to clear the grid of all the
-         * values that have been filled as a result of this. */
-        grid->clear_values_starting_from_coord(curr_coord);
-    }
-
-    return false;
-}
-
-void remove_values_from_solution(Grid *grid, int values_to_remove) {
-    auto random_cell_coords = get_N_random_cell_coords(values_to_remove);
-    for (auto coord : random_cell_coords) grid->update(coord, 0);
-}
-
-/*-----------------*/
-/* SOLVE FUNCTIONS */
-/*-----------------*/
-
-bool _solve(
-    Grid *grid,
-    Coord cell_coord = std::make_pair(0, 0)
-) {
-    auto next_coord = get_next_cell_coord(cell_coord);
-
-    if (grid->coord_was_pre_filled(cell_coord)) {
-        if (cell_coord == std::make_pair(8, 8)) return true;
-        return _solve(grid, next_coord);
-    }
-
-    auto values = get_possible_values_for_cell_at_coord(*grid, cell_coord);
-    if (values.size() == 0) return false;
-
-    for (auto value : values) {
-        grid->update(cell_coord, value);
-        if (cell_coord == std::make_pair(8, 8)) return true;  // Solved!
-
-        bool next_cell_is_solved = _solve(grid, next_coord);
-        if (next_cell_is_solved) return true;
-
-        /* If this value didn't work, we need to clear the grid of all the
-         * values that have been filled as a result of this. */
-        grid->clear_values_starting_from_coord(cell_coord);
-    }
-
-    if (cell_coord == std::make_pair(0, 0)) throw std::logic_error(
-        "This puzzle doesn't have a solution!");
-
-    return false;
-}
-
-/*-----------------*/
-/* SUITE FUNCTIONS */
-/*-----------------*/
-
-void solve(Grid *grid) {
-    _solve(grid);
-}
-
-bool is_valid_solution(
-    const Grid& grid,
-    Coord curr_coord = std::make_pair(0, 0)
-) {
-    int value = grid.get(curr_coord);
-    if (value == 0) return false;  // It's unfinished.
-    else if (
-        grid.value_exists_elsewhere_in_column(curr_coord, value) ||
-        grid.value_exists_elsewhere_in_row(curr_coord, value) ||
-        grid.value_exists_elsewhere_in_3x3_grid(curr_coord, value))
-        return false;
-    if (curr_coord == std::make_pair(8, 8)) return true;
-    else
-        return is_valid_solution(grid, get_next_cell_coord(curr_coord));
-}
-
-Grid generate_puzzle() {
-    Grid grid;
-    fill_with_valid_solution(&grid);
-    remove_values_from_solution(&grid, 30);
-    return grid;
-}
-
 }  // namespace sudoku
+
+#endif  // SRC_GRID_H_
