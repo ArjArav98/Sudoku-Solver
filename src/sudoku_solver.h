@@ -1,7 +1,6 @@
 /* Copyright 2023 Arjun Aravind */
 #ifndef SRC_SUDOKU_SOLVER_H_
 #define SRC_SUDOKU_SOLVER_H_
-#endif  // SRC_SUDOKU_SOLVER_H_
 
 #include<utility>
 
@@ -48,3 +47,5 @@ void solve(Grid *grid) {
 }
 
 }  // namespace sudoku
+
+#endif  // SRC_SUDOKU_SOLVER_H_

@@ -1,7 +1,6 @@
 /* Copyright 2023 Arjun Aravind */
 #ifndef SRC_SUDOKU_GENERATOR_H_
 #define SRC_SUDOKU_GENERATOR_H_
-#endif  // SRC_SUDOKU_GENERATOR_H_
 
 #include<chrono>
 #include<random>
@@ -56,3 +55,5 @@ Grid generate_puzzle() {
 }
 
 }  // namespace sudoku
+
+#endif  // SRC_SUDOKU_GENERATOR_H_

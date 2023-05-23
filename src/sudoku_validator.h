@@ -1,7 +1,6 @@
 /* Copyright 2023 Arjun Aravind */
 #ifndef SRC_SUDOKU_VALIDATOR_H_
 #define SRC_SUDOKU_VALIDATOR_H_
-#endif  // SRC_SUDOKU_VALIDATOR_H_
 
 #include<utility>
 
@@ -27,3 +26,5 @@ bool is_valid_solution(
 }
 
 }  // namespace sudoku
+
+#endif  // SRC_SUDOKU_VALIDATOR_H_
