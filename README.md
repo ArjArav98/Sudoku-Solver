@@ -40,7 +40,7 @@ There are **three functions** that Sudoku-Suite provides the developer, along wi
 
 ## Examples
 
-**NOTE:** The following examples are also present in the repository in the `samples/` directory.
+**NOTE:** The following examples are also present in the repository in the `examples/` directory.
 
 * [Solving and validating a Sudoku puzzle](#solving-and-validating-sudoku-puzzle)
 * [Generating a Sudoku puzzle](#generating-a-sudoku-puzzle)
