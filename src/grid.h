@@ -9,6 +9,7 @@
 #include<stdexcept>
 #include<string>
 #include<utility>
+#include<vector>
 
 #include"../src/coord.h"
 
@@ -171,7 +172,7 @@ class Grid {
 
     /*------------------------*/
     /* Cell-related Functions */
-   
+
     std::vector<int> get_possible_values_for_cell_at_coord(Coord coord) {
         std::vector<int> values = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         std::vector<int> filtered_values(values.size());
@@ -189,7 +190,7 @@ class Grid {
         // Shrink vector to remove empty elements.
         filtered_values.resize(std::distance(filtered_values.begin(), it));
         return filtered_values;
-    }    
+    }
 
     /*--------------------*/
     /* Operator Overloads */

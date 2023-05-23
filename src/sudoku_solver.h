@@ -3,6 +3,8 @@
 #define SRC_SUDOKU_SOLVER_H_
 #endif  // SRC_SUDOKU_SOLVER_H_
 
+#include<utility>
+
 #include"../src/grid.h"
 #include"../src/coord_utils.h"
 
@@ -41,6 +43,7 @@ bool _solve(
 }
 
 void solve(Grid *grid) {
+    /* Actual function that is used by the user. */
     _solve(grid);
 }
 
